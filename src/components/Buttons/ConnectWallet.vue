@@ -1,5 +1,12 @@
 <template>
+  <link
+    rel="stylesheet"
+    href="https://use.fontawesome.com/releases/v5.2.0/css/all.css"
+    integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ"
+    crossorigin="anonymous"
+  />
   <h4>Buttons animations</h4>
+  <font-awesome-icon icon="coffee" />
   <div id="app">
     <div class="wrapper half">
       <div class="half">
@@ -59,7 +66,7 @@ export default {
     finishTask() {
       this.primary = "<i class='fas fa-spinner fa-spin'></i>";
       setTimeout(() => {
-        this.primary = "<i class='fas fa-check'></i> Done!";
+        this.primary = 'Done!';
       }, 2500);
     },
 
