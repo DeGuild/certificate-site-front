@@ -1,10 +1,12 @@
 <template>
   <background />
   <connect-wallet />
-  <no-wallet/>
+  <no-wallet v-if="user === null"/>
 </template>
 
 <script>
+import { useStore } from 'vuex';
+import { computed } from 'vue';
 import ConnectWallet from '../components/Buttons/ConnectWallet.vue';
 import Background from '../components/General/Background.vue';
 import NoWallet from '../components/General/NoWallet.vue';
@@ -16,6 +18,13 @@ export default {
     ConnectWallet,
     Background,
     NoWallet,
+  },
+  setup() {
+    const store = useStore();
+    const user = computed(() => store.state.User.user);
+    console.log(store.state.User.user);
+    console.log(user);
+    return { user };
   },
 };
 </script>
