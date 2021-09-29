@@ -1100,6 +1100,11 @@
   resolved "https://registry.yarnpkg.com/@fontsource/poppins/-/poppins-4.5.0.tgz#a419697b85864afbf8363f5c247b1e9d1f117564"
   integrity sha512-RqgMIQqKHWNH3IUj+a0MAhlb4g5fftsXRTJ2bauefBmfM8Ja5q+qQZjKwyB/iCc+paJD320zFnLJ8G+y1ZyemQ==
 
+"@fontsource/secular-one@^4.5.0":
+  version "4.5.0"
+  resolved "https://registry.yarnpkg.com/@fontsource/secular-one/-/secular-one-4.5.0.tgz#0a253cf80beabe9eb888f51e0ccda6d3161b4e12"
+  integrity sha512-rv8mFOD2P9E+UjhubyLVu3bls8DqwBRouFtHHaXCKLMc30VWuw6CLN2l7/RmlVPgN2A8wyPJHyMOxc/Ohik78g==
+
 "@fortawesome/fontawesome-common-types@^0.2.36":
   version "0.2.36"
   resolved "https://registry.yarnpkg.com/@fortawesome/fontawesome-common-types/-/fontawesome-common-types-0.2.36.tgz#b44e52db3b6b20523e0c57ef8c42d315532cb903"

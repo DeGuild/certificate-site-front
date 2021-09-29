@@ -1,15 +1,15 @@
 <template>
-    <connect-wallet/>
+  <a-buttons />
 </template>
 
 <script>
 // @ is an alias to /src
-import ConnectWallet from '@/components/Buttons/ConnectWallet.vue';
+import aButtons from '../components/Buttons/_Buttons.vue';
 
 export default {
   name: 'Buttons',
   components: {
-    ConnectWallet,
+    aButtons,
   },
 };
 </script>
