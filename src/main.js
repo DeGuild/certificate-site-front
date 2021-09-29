@@ -4,6 +4,7 @@ import {
   faUserSecret, faPhone, faCoffee, faSpinner,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import '@fontsource/poppins';
 
 import App from './App.vue';
 import router from './router';

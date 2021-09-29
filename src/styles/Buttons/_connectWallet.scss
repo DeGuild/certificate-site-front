@@ -1,81 +1,56 @@
-// Mix classes to get various results.
-
-@import url('https://fonts.googleapis.com/css?family=Open+Sans');
-
-body {
-  font-family: 'Open sans';
-  font-size: 36px;
-  font-weight: bold;
-  text-align: center;
-  background: $background-color;
-  color: $primary-color;
-  padding-top: 30px;
-  letter-spacing: 0.05rem;
-  @media (max-width: $screen-xs) {
-    font-size: 18px;
-  }
-  .half {
-    width: 50%;
-    float: left;
-    @media (max-width: $screen-sm) {
-      width: 100%;
-    }
-  }
-  .btn {
-    border: none;
-    outline: none;
-    background: none;
-    color: $primary-color;
-    padding: 10px 25px;
-    cursor: pointer;
-    letter-spacing: 0.1rem;
-    background: $primary;
-    transition: all 0.3s;
-    box-shadow: 0px 0px 50px -7px rgba(0, 0, 0, 0.75);
-    min-width: 115px;
-    &:hover {
-      background: $primary-hover;
-    }
-    &:active {
-      box-shadow: 0px 0px 40px -7px rgba(0, 0, 0, 0.75);
-    }
-    // Default is lg
-    &.xs {
-      padding: 5px 15px;
-    }
-    &.md {
-      padding: 10px 25px;
-    }
-    &.lg {
-      padding: 15px 35px;
-    }
-    &.btn-1 {
-      box-shadow: inset 0px 0px 0px 0px $primary;
-      transition-name: box-shadow;
-      background: $primary;
-      &:hover {
-        background: $primary-hover;
-      }
-    }
-    &.btn-danger {
-      background: $danger;
-      &:hover {
-        background: $danger-hover;
-      }
-    }
-    &.btn-4 {
-      transition-name: box-shadow;
-      box-shadow: inset 0px 0px 300px -120px rgba(0, 0, 0, 1);
-      background: $info;
-      &:hover {
-        background: $info-hover;
-      }
-    }
-  }
-}
-
-.refresh {
+.app {
   position: absolute;
-  top: 20px;
-  left: 20px;
+  left: 12.4%;
+  right: 71.67%;
+  top: 51.85%;
+  bottom: 29.35%;
+}
+body {
+  .btn {
+    position: absolute;
+    left: 12.4%;
+    right: 71.67%;
+    top: 51.85%;
+    bottom: 29.35%;
+    height: 10vw;
+    width: 15vw;
+    border-radius: 0px;
+    transition: all 0.3s;
+
+    font-family: Poppins;
+    font-style: normal;
+    font-weight: 900;
+    font-size: 2.2vw;
+    line-height: 60px;
+    display: flex;
+    letter-spacing: -0.015em;
+
+    align-items: center;
+    text-align: center;
+    color: #ffffff;
+
+    text-shadow: $shadow;
+
+    background: $btn-color1;
+    background-blend-mode: soft-light, normal;
+    border-radius: 24px;
+
+    &:hover {
+      background: $btn-color1-hover;
+    }
+
+    &.text {
+      font-family: Poppins;
+      font-style: normal;
+      font-weight: 900;
+      font-size: 2.2vw;
+      line-height: 60px;
+      display: flex;
+      letter-spacing: -0.015em;
+
+      align-items: center;
+      text-align: center;
+      color: #ffffff;
+    }
+  }
 }
