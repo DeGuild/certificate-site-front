@@ -1973,6 +1973,11 @@ acorn@^7.1.1, acorn@^7.4.0:
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-7.4.1.tgz#feaed255973d2e77555b83dbc08851a6c63520fa"
   integrity sha512-nQyp0o1/mNdbTO1PO6kHkwSrmgZ0MT/jCCpNiwbUjGoRN4dlBhqJtoQuCnEOKzgTVwg0ZWiCoQy6SxMebQVh8A==
 
+add@^2.0.6:
+  version "2.0.6"
+  resolved "https://registry.yarnpkg.com/add/-/add-2.0.6.tgz#248f0a9f6e5a528ef2295dbeec30532130ae2235"
+  integrity sha1-JI8Kn25aUo7yKV2+7DBTITCuIjU=
+
 address@^1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/address/-/address-1.1.2.tgz#bf1116c9c758c51b7a933d296b72c221ed9428b6"
@@ -9609,6 +9614,14 @@ uuid@^3.3.2, uuid@^3.4.0:
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.4.0.tgz#b23e4358afa8a202fe7a100af1f5f883f02007ee"
   integrity sha512-HjSDRw6gZE5JMggctHBcjVak08+KEVhSIiDzFnT9S9aegmp85S/bReBVTb4QTFaRNptJ9kuYaNhnbNEOkbKb/A==
 
+v-viewer@^3.0.10:
+  version "3.0.10"
+  resolved "https://registry.yarnpkg.com/v-viewer/-/v-viewer-3.0.10.tgz#7e87ccbfd972d229e65c58996b8daa103fc98727"
+  integrity sha512-ZT5sYYS+Cy4z2TP/PuhqPyiK4NonaZzhkDPfiY9bwa5EjGyusO8R7/k/4c1ptvTzx2nBSV9MvQHl2X3XzhANqw==
+  dependencies:
+    lodash "^4.17.21"
+    viewerjs "^1.9.0"
+
 v8-compile-cache@^2.0.3:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/v8-compile-cache/-/v8-compile-cache-2.3.0.tgz#2de19618c66dc247dcfb6f99338035d8245a2cee"
@@ -9646,6 +9659,11 @@ verror@1.10.0:
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
 
+viewerjs@^1.10.1, viewerjs@^1.9.0:
+  version "1.10.1"
+  resolved "https://registry.yarnpkg.com/viewerjs/-/viewerjs-1.10.1.tgz#07499ed043d0a29e3002b90f55c5b228bd1a742c"
+  integrity sha512-Oyzd3JP9dDSd+bBulfnQ+UTfHoobFwkmcT/uKSnQXjmPz7rZU0HJIiKudxPaMsiv17dr4Sm1cHnASJcDlFw1PA==
+
 vm-browserify@^1.0.1:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/vm-browserify/-/vm-browserify-1.1.2.tgz#78641c488b8e6ca91a75f511e7a3b32a86e5dda0"
@@ -9663,6 +9681,13 @@ vue-eslint-parser@^7.10.0:
     esquery "^1.4.0"
     lodash "^4.17.21"
     semver "^6.3.0"
+
+vue-gallery-slideshow@^1.5.2:
+  version "1.5.2"
+  resolved "https://registry.yarnpkg.com/vue-gallery-slideshow/-/vue-gallery-slideshow-1.5.2.tgz#41fc93d454cc5b068adfb574351d2310ca9c42cb"
+  integrity sha512-P5u+H7ZL4MMx0uwmT9A76zQdeSX/m4/HoLWmUZxf7c/N0q5hnrG20/330xw049d5GnsBq91G3JUJadZOEqAUzw==
+  dependencies:
+    vue-runtime-helpers "^1.1.2"
 
 vue-hot-reload-api@^2.3.0:
   version "2.3.4"
@@ -9696,6 +9721,16 @@ vue-router@^4.0.0-0:
   dependencies:
     "@vue/devtools-api" "^6.0.0-beta.14"
 
+vue-runtime-helpers@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/vue-runtime-helpers/-/vue-runtime-helpers-1.1.2.tgz#446b7b820888ab0c5264d2c3a32468e72e4100f3"
+  integrity sha512-pZfGp+PW/IXEOyETE09xQHR1CKkR9HfHZdnMD/FVLUNI+HxYTa82evx5WrF6Kz4s82qtqHvMZ8MZpbk2zT2E1Q==
+
+vue-social-sharing@^4.0.0-alpha4:
+  version "4.0.0-alpha4"
+  resolved "https://registry.yarnpkg.com/vue-social-sharing/-/vue-social-sharing-4.0.0-alpha4.tgz#48d17f4ff2828c60689f2a065df86588af2bd1fb"
+  integrity sha512-hMbgpZkY5aRAiznSB/sgzdMVgdSbkmIHEaELX7pUbuUd6KS1Z/GAi7a/q0Qn+GFn0+6qMMvwyp3ZOE0+WYPQ1w==
+
 vue-style-loader@^4.1.0, vue-style-loader@^4.1.2:
   version "4.1.3"
   resolved "https://registry.yarnpkg.com/vue-style-loader/-/vue-style-loader-4.1.3.tgz#6d55863a51fa757ab24e89d9371465072aa7bc35"
@@ -9708,6 +9743,11 @@ vue-template-es2015-compiler@^1.9.0:
   version "1.9.1"
   resolved "https://registry.yarnpkg.com/vue-template-es2015-compiler/-/vue-template-es2015-compiler-1.9.1.tgz#1ee3bc9a16ecbf5118be334bb15f9c46f82f5825"
   integrity sha512-4gDntzrifFnCEvyoO8PqyJDmguXgVPxKiIxrBKjIowvL9l+N66196+72XVYR8BBf1Uv1Fgt3bGevJ+sEmxfZzw==
+
+vue3-carousel@^0.1.27:
+  version "0.1.27"
+  resolved "https://registry.yarnpkg.com/vue3-carousel/-/vue3-carousel-0.1.27.tgz#59ee1c549bc2e417171c07d118f6e47989f71fea"
+  integrity sha512-0NhqqmIIm+RgUOmdEAXAgHsbrgcLuulJtUAb4JscDlB3xe2Fy75r5epUxTB3umJVblzOs/13waR0KNi2w4CjCw==
 
 vue@^3.0.0:
   version "3.2.19"
@@ -10367,6 +10407,11 @@ yargs@^16.0.0:
     string-width "^4.2.0"
     y18n "^5.0.5"
     yargs-parser "^20.2.2"
+
+yarn@^1.22.15:
+  version "1.22.15"
+  resolved "https://registry.yarnpkg.com/yarn/-/yarn-1.22.15.tgz#3431d5f134d3c752a57a9dd7f5e1167627ca3cc3"
+  integrity sha512-AzoEDxj256BOS/jqDXA3pjyhmi4FRBBUMgYoTHI4EIt2EhREkvH0soPVEtnD+DQIJfU5R9bKhcZ1H9l8zPWeoA==
 
 yorkie@^2.0.0:
   version "2.0.0"

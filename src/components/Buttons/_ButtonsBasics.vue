@@ -1,24 +1,50 @@
 <template>
-  <ShareNetwork
-    network="facebook"
-    url="https://blockchain-land.firebaseapp.com/login"
-    :title=this.primary
-    hashtags="NewSkillBetterMe"
-  >
-    <div class="facebook"></div>
-  </ShareNetwork>
-  <ShareNetwork
-    network="twitter"
-    url="https://blockchain-land.firebaseapp.com/login"
-    :title=this.primary
-    quote="The hot reload is so fast it\'s near instant. - Evan You"
-    hashtags="NewSkillBetterMe"
-    twitterUser="youyuxi"
-  >
-    <!-- <i class="fab fah fa-lg fa-twitter"></i>
-    <span>Share on Twitter</span> -->
-    <div class="twitter"></div>
-  </ShareNetwork>
+  <link
+    rel="stylesheet"
+    href="https://use.fontawesome.com/releases/v5.2.0/css/all.css"
+    integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ"
+    crossorigin="anonymous"
+  />
+  <h4>Buttons animations</h4>
+  <font-awesome-icon icon="coffee" />
+  <div id="app">
+    <div class="wrapper half">
+      <div class="half">
+        <button
+          class="btn"
+          @click="finishTask(primary)"
+          v-html="primary"
+        >
+        </button>
+      </div>
+      <div class="half">
+        <button
+          @click="progressTask"
+          class="btn btn-1"
+          v-html="success"
+          :style="btn1style"
+        ></button>
+      </div>
+    </div>
+
+    <div class="wrapper half">
+      <div class="half">
+        <button
+          @click="failTask"
+          class="btn btn-danger"
+          v-html="danger"
+        ></button>
+      </div>
+      <div class="half">
+        <button
+          class="btn btn-4"
+          v-html="info"
+          @click="infoTask"
+          :style="btn4style"
+        ></button>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>

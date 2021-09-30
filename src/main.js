@@ -6,6 +6,8 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import '@fontsource/poppins';
 import '@fontsource/secular-one';
+import 'viewerjs/dist/viewer.css';
+import VueSocialSharing from 'vue-social-sharing';
 
 import App from './App.vue';
 import router from './router';
@@ -19,5 +21,6 @@ library.add(faSpinner);
 createApp(App)
   .use(store)
   .use(router)
+  .use(VueSocialSharing)
   .component('font-awesome-icon', FontAwesomeIcon)
   .mount('#app');
