@@ -3,6 +3,7 @@
     network="facebook"
     url="https://blockchain-land.firebaseapp.com/login"
     :title=this.primary
+    description="fuck u"
     hashtags="NewSkillBetterMe"
   >
     <div class="facebook"></div>

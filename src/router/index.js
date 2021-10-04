@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Home from '../views/Home.vue';
-import Buttons from '../views/Buttons.vue';
+import Tester from '../views/_Sandbox.vue';
 import ConnectWallet from '../views/CertificateSite.vue';
 import Gallery from '../views/Gallery.vue';
 
@@ -11,9 +11,9 @@ const routes = [
     component: ConnectWallet,
   },
   {
-    path: '/buttons',
-    name: 'Buttons',
-    component: Buttons,
+    path: '/testing',
+    name: 'testing',
+    component: Tester,
   },
   {
     path: '/gallery',
