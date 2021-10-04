@@ -11,6 +11,8 @@
     <router-link to="/buttons">Buttons</router-link> |
     <router-link to="/connectWallet">Wallet</router-link>
   </div> -->
+  <footer></footer>
+
   <router-view />
 </template>
 

@@ -1,15 +1,15 @@
 <template>
-  <a-buttons />
+  <certificate-board />
 </template>
 
 <script>
 // @ is an alias to /src
-import aButtons from '../components/Buttons/_Buttons.vue';
+import CertificateBoard from '../components/Display/CertificateBoard.vue';
 
 export default {
   name: 'Buttons',
   components: {
-    aButtons,
+    CertificateBoard,
   },
 };
 </script>

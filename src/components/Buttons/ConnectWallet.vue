@@ -64,5 +64,45 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import '@/styles/Buttons/_connectWallet.scss';
+.btn {
+  /* Small button */
+
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+
+  position: absolute;
+  width: 10vw;
+  height: 3vw;
+  left: 88vw;
+  top: 20px;
+
+  /* standart theme/error */
+  background: #ff5252;
+  border-radius: 4px;
+
+  font-family: Secular One;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 0.7vw;
+  display: flex;
+  align-items: center;
+  letter-spacing: 0.00892857em;
+  text-transform: uppercase;
+
+  /* shades/white */
+  color: #ffffff;
+
+  /* Inside Auto Layout */
+  flex: none;
+  order: 0;
+  flex-grow: 0;
+  margin: 0px 0px;
+  cursor: pointer;
+
+  &:hover {
+    background: #cc3b3b;
+  }
+}
 </style>
