@@ -2,7 +2,6 @@ import { createRouter, createWebHistory } from 'vue-router';
 import Home from '../views/Home.vue';
 import Tester from '../views/_Sandbox.vue';
 import ConnectWallet from '../views/CertificateSite.vue';
-import Gallery from '../views/Gallery.vue';
 
 const routes = [
   {
@@ -14,11 +13,6 @@ const routes = [
     path: '/testing',
     name: 'testing',
     component: Tester,
-  },
-  {
-    path: '/gallery',
-    name: 'Gallery',
-    component: Gallery,
   },
   {
     path: '/connectWallet',
