@@ -12,7 +12,7 @@
         :style="state.styles[imageIndex]"
         :src="state.images[imageIndex]"
         v-if="state.images[imageIndex]"
-        v-on:click="dummy"
+        v-on:click="choosing(imageIndex)"
       />
     </div>
   </div>
@@ -29,6 +29,8 @@ import { defineComponent, reactive } from 'vue';
 export default defineComponent({
   name: 'CertificateBoard',
   setup() {
+    // const balances = 0;
+
     const state = reactive({
       imageSelected: 'https://placekitten.com/801/800',
       images: [
@@ -115,9 +117,13 @@ export default defineComponent({
       ],
     });
     function dummy() {}
+    function choosing(imageIdx) {
+      state.imageSelected = state.images[imageIdx];
+    }
     return {
       state,
       dummy,
+      choosing,
     };
   },
 });
@@ -136,6 +142,9 @@ export default defineComponent({
 
   &.click {
     cursor: pointer;
+    &:hover{
+      opacity: 0.89;
+    }
   }
 
   &.selected {
@@ -144,6 +153,7 @@ export default defineComponent({
     left: 70.677vw;
     top: 24.115vw;
   }
+
 }
 .background {
   width: 52.031vw;
@@ -196,6 +206,10 @@ export default defineComponent({
 
   &.previous {
     left: 50.885vw;
+  }
+
+  &:hover {
+    background: $danger-hover;
   }
 }
 </style>

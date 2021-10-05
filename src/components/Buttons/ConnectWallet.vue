@@ -6,7 +6,7 @@
 
 <script>
 import { useStore } from 'vuex';
-import { reactive } from 'vue';
+import { reactive, onBeforeMount } from 'vue';
 
 const Web3 = require('web3');
 
@@ -15,19 +15,49 @@ export default {
   setup() {
     const store = useStore();
     const state = reactive({
-      primary: 'CONNECT WALLET',
+      primary: 'SOMETHING WENT WRONG',
       btn1style: {},
+      network: '',
     });
 
-    const ethEnabled = async () => {
+    async function verifyNetwork() {
       const web3 = new Web3(Web3.givenProvider || 'ws://localhost:8545');
-      web3.eth.net.getNetworkType().then(console.log);
-      state.primary = "<i class='fas fa-spinner fa-spin'></i>";
+      state.network = await web3.eth.net.getNetworkType();
+
+      if (state.network !== 'rinkeby') {
+        console.log('Please change to rinkeby testnet');
+        state.primary = 'CHANGE TO RINKEBY';
+        return false;
+      }
+      return true;
+    }
+    async function connectToRinkeby() {
+      try {
+        //  Rinkeby chain id
+        await window.ethereum.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: '0x4' }],
+        });
+      } catch (switchError) {
+        // This error code indicates that the chain has not been added to MetaMask.
+        if (switchError.code === 4902) {
+          console.error(switchError);
+        }
+        // handle other "switch" errors
+      }
+    }
+
+    function disconnected() {
+      state.primary = 'CONNECT WALLET';
+      store.dispatch('User/setUser', null);
+    }
+
+    async function connectWallet() {
       if (window.ethereum) {
         try {
           const accounts = await window.ethereum.send('eth_requestAccounts');
           window.web3 = new Web3(window.ethereum);
-          console.log(accounts.result[0]);
+          // console.log(accounts.result[0]);
           const accountLength = accounts.result[0].length;
           const connectedAddress = `${accounts.result[0].substring(
             0,
@@ -37,24 +67,52 @@ export default {
             accountLength,
           )}`;
           state.primary = connectedAddress;
-          store.dispatch(
-            'User/setUser',
-            `${accounts.result[0].substring(
-              0,
-              5,
-            )}...${accounts.result[0].substring(
-              accountLength - 4,
-              accountLength,
-            )}`,
-          );
+          store.dispatch('User/setUser', accounts.result[0]);
           return true;
         } catch (error) {
-          console.error(error);
+          // console.error(error);
           state.primary = 'CONNECT WALLET';
         }
       }
       return false;
-    };
+    }
+    function handleChainChanged() {
+      // We recommend reloading the page, unless you must do otherwise
+      window.location.reload();
+    }
+
+    // For now, 'eth_accounts' will continue to always return an array
+    function handleAccountsChanged(accounts) {
+      // console.log(accounts[0]);
+      // console.log(store.state.User.user);
+      const current = accounts[0];
+      if (accounts.length === 0) {
+        // MetaMask is locked or the user has not connected any accounts
+        disconnected();
+      } else if (current !== store.state.User.user) {
+        connectWallet();
+        // Do any other work!
+      }
+    }
+
+    onBeforeMount(async () => {
+      if (!store.state.User.user && window.ethereum) {
+        state.primary = 'CONNECT WALLET';
+      }
+      await verifyNetwork();
+
+      window.ethereum.on('accountsChanged', handleAccountsChanged);
+      window.ethereum.on('chainChanged', handleChainChanged);
+    });
+
+    async function ethEnabled() {
+      state.primary = "<i class='fas fa-spinner fa-spin'></i>";
+      if (state.network !== 'rinkeby') {
+        await connectToRinkeby();
+        return false;
+      }
+      return connectWallet();
+    }
     return {
       state,
       ethEnabled,
