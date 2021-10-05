@@ -25,7 +25,7 @@ export default {
       state.network = await web3.eth.net.getNetworkType();
 
       if (state.network !== 'rinkeby') {
-        console.log('Please change to rinkeby testnet');
+        // console.log('Please change to rinkeby testnet');
         state.primary = 'CHANGE TO RINKEBY';
         return false;
       }
@@ -56,7 +56,6 @@ export default {
       if (window.ethereum) {
         try {
           const accounts = await window.ethereum.send('eth_requestAccounts');
-          window.web3 = new Web3(window.ethereum);
           // console.log(accounts.result[0]);
           const accountLength = accounts.result[0].length;
           const connectedAddress = `${accounts.result[0].substring(
@@ -76,6 +75,7 @@ export default {
       }
       return false;
     }
+
     function handleChainChanged() {
       // We recommend reloading the page, unless you must do otherwise
       window.location.reload();
@@ -113,6 +113,7 @@ export default {
       }
       return connectWallet();
     }
+
     return {
       state,
       ethEnabled,
