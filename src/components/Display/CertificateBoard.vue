@@ -16,8 +16,8 @@
       />
     </div>
   </div>
-  <button class="navButton previous">&#62;</button>
-  <button class="navButton">&#60;</button>
+  <button class="navButton previous" v-on:click="dummy()">&#62;</button>
+  <button class="navButton" v-on:click="dummy()">&#60;</button>
   <div class="image selected">
     <img class="image selected display" :src="state.imageSelected" />
   </div>
