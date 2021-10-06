@@ -2,7 +2,7 @@
   <ShareNetwork
     network="facebook"
     url="https://blockchain-land.firebaseapp.com/login"
-    :title=this.primary
+    :title="this.primary"
     description="fuck u"
     hashtags="NewSkillBetterMe"
   >
@@ -11,7 +11,7 @@
   <ShareNetwork
     network="twitter"
     url="https://blockchain-land.firebaseapp.com/login"
-    :title=this.primary
+    :title="this.primary"
     quote="The hot reload is so fast it\'s near instant. - Evan You"
     hashtags="NewSkillBetterMe"
     twitterUser="youyuxi"
@@ -76,5 +76,25 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import '@/styles/Buttons/_buttons.scss';
+.twitter {
+  position: absolute;
+  width: 6.979vw;
+  height: 6.979vw;
+  left: 71.927vw;
+  top: 45.302vw;
+
+  background: url('../../assets/twitter.png');
+  background-size: cover;
+}
+
+.facebook {
+  position: absolute;
+  width: 6.979vw;
+  height: 6.979vw;
+  left: 80.651vw;
+  top: 45.302vw;
+
+  background: url('../../assets/facebook.png');
+  background-size: cover;
+}
 </style>
