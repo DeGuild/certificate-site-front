@@ -4,49 +4,67 @@
   </div> -->
   <div class="background"></div>
   <div v-for="imageIndex in 8" :key="imageIndex">
-    <div class="background frame" :style="state.stylesFrame[imageIndex]"></div>
-
-    <div class="image" :style="state.styles[imageIndex]">
-      <img
-        class="image display click"
-        :style="state.styles[imageIndex]"
-        :src="state.images[imageIndex]"
-        v-if="state.images[imageIndex]"
-        v-on:click="choosing(imageIndex)"
-      />
+    <div
+      class="background frame"
+      :style="state.stylesFrame[imageIndex - 1]"
+    ></div>
+    <div v-if="state.images">
+      <div v-if="state.images[imageIndex - 1]">
+        <div class="image" :style="state.styles[imageIndex - 1]">
+          <img
+            class="image display click"
+            :style="state.styles[imageIndex - 1]"
+            :src="state.images[imageIndex - 1]"
+            v-if="state.images[imageIndex - 1]"
+            v-on:click="choosing(imageIndex - 1)"
+          />
+        </div>
+      </div>
     </div>
   </div>
+
   <button class="navButton previous" v-on:click="dummy()">&#62;</button>
   <button class="navButton" v-on:click="dummy()">&#60;</button>
-  <div class="image selected">
+  <div class="image selected" v-if="state.imageSelected">
     <img class="image selected display" :src="state.imageSelected" />
   </div>
 </template>
 
 <script>
-import { defineComponent, reactive } from 'vue';
+import { defineComponent, reactive, computed } from 'vue';
+import { useStore } from 'vuex';
 
 export default defineComponent({
   name: 'CertificateBoard',
   setup() {
     // const balances = 0;
+    const store = useStore();
+
+    /**
+     * TODO:
+     */
+    function urlExtractor(proxy) {
+      const urlArr = [];
+      for (let index = 0; index < proxy.length; index += 1) {
+        urlArr.push(proxy[index][1].imageUrl);
+      }
+      return urlArr;
+    }
 
     const state = reactive({
-      imageSelected: 'https://placekitten.com/801/800',
-      images: [
-        'https://placekitten.com/801/800',
-        'https://placekitten.com/802/800',
-        'https://placekitten.com/803/800',
-        'https://placekitten.com/801/800',
-        'https://placekitten.com/802/800',
-        'https://placekitten.com/803/800',
-        'https://placekitten.com/801/800',
-        'https://placekitten.com/802/800',
-        'https://placekitten.com/803/800',
-        'https://placekitten.com/803/800',
-      ],
+      imageSelected: computed(() => {
+        const good = store.state.User.certificateSelected
+          ? store.state.User.certificateSelected
+          : store.state.User.certificateSelected;
+        return good;
+      }),
+      images: computed(() => {
+        const good = store.state.User.certificates
+          ? urlExtractor(store.state.User.certificates)
+          : store.state.User.certificates;
+        return good;
+      }),
       styles: [
-        {},
         {
           left: '10vw',
           top: '26.406vw',
@@ -81,7 +99,6 @@ export default defineComponent({
         },
       ],
       stylesFrame: [
-        {},
         {
           left: '9.4vw',
           top: '25.9vw',
@@ -116,9 +133,11 @@ export default defineComponent({
         },
       ],
     });
-    function dummy() {}
+    function dummy() {
+      // console.log(state.images);
+    }
     function choosing(imageIdx) {
-      state.imageSelected = state.images[imageIdx];
+      store.dispatch('User/setChosenCertificate', state.images[imageIdx]);
     }
     return {
       state,
@@ -142,7 +161,7 @@ export default defineComponent({
 
   &.click {
     cursor: pointer;
-    &:hover{
+    &:hover {
       opacity: 0.89;
     }
   }
@@ -153,7 +172,6 @@ export default defineComponent({
     left: 70.677vw;
     top: 24.115vw;
   }
-
 }
 .background {
   width: 52.031vw;

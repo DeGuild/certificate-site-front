@@ -10,6 +10,10 @@ import { reactive, onBeforeMount } from 'vue';
 
 const Web3 = require('web3');
 
+const {
+  abi,
+} = require('../../../../DeGuild-MG-CS-Token-contracts/artifacts/contracts/SkillCertificates/ISkillCertificate.sol/ISkillCertificate.json');
+
 export default {
   name: 'ConnectWallet',
   setup() {
@@ -18,10 +22,29 @@ export default {
       primary: 'SOMETHING WENT WRONG',
       btn1style: {},
       network: '',
+      certificateSet: null,
     });
+    const web3 = new Web3(Web3.givenProvider || 'ws://localhost:8545');
+
+    async function getName(address) {
+      const certificateManager = new web3.eth.Contract(abi, address);
+      const caller = await certificateManager.methods.name().call();
+      return caller;
+    }
+
+    async function hasCertificate(address) {
+      const certificateManager = new web3.eth.Contract(abi, address);
+      // console.log(store.state.User.user);
+
+      const caller = await certificateManager.methods
+        .verify(store.state.User.user)
+        .call();
+      return caller;
+    }
+
+    // console.log(certificateManager.methods);
 
     async function verifyNetwork() {
-      const web3 = new Web3(Web3.givenProvider || 'ws://localhost:8545');
       state.network = await web3.eth.net.getNetworkType();
 
       if (state.network !== 'rinkeby') {
@@ -67,6 +90,27 @@ export default {
           )}`;
           state.primary = connectedAddress;
           store.dispatch('User/setUser', accounts.result[0]);
+          // const ownedCertificates = [];
+          state.certificateSet.result.forEach(async (element) => {
+            const hasCertificateResult = await hasCertificate(element);
+            if (hasCertificateResult) {
+              const name = await getName(element);
+              const imageUrl = await fetch(
+                `https://us-central1-deguild-2021.cloudfunctions.net/app/readCertificate/${element}`,
+                { mode: 'cors' },
+              );
+              const certificateArray = store.state.User.certificate
+                ? store.state.User.certificate
+                : [];
+              const dataUrl = await imageUrl.json();
+              certificateArray.push([name, dataUrl, element]);
+              store.dispatch('User/setCertificates', certificateArray);
+              // [name, imageUrl, element]
+            }
+
+            // ownedCertificates
+            // console.log(hasCertificateResult);
+          });
           return true;
         } catch (error) {
           // console.error(error);
@@ -100,6 +144,12 @@ export default {
         state.primary = 'CONNECT WALLET';
       }
       await verifyNetwork();
+      const response = await fetch(
+        'https://us-central1-deguild-2021.cloudfunctions.net/app/allCertificates',
+        { mode: 'cors' },
+      );
+      // waits until the request completes...
+      state.certificateSet = await response.json();
 
       window.ethereum.on('accountsChanged', handleAccountsChanged);
       window.ethereum.on('chainChanged', handleChainChanged);
@@ -111,7 +161,10 @@ export default {
         await connectToRinkeby();
         return false;
       }
-      return connectWallet();
+      await connectWallet();
+      // console.log(data);
+      // console.log('we', caller);
+      return true;
     }
 
     return {
