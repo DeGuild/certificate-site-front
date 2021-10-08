@@ -2,14 +2,14 @@
   <div v-if="state.imageSelected">
     <ShareNetwork
       network="facebook"
-      url="https://certificate-manager.firebaseapp.com/"
+      url="https://certificate-manager.web.app/"
       hashtags="DeGuild,Skill"
     >
       <div class="facebook"></div>
     </ShareNetwork>
     <ShareNetwork
       network="twitter"
-      url="https://certificate-manager.firebaseapp.com/"
+      url="https://certificate-manager.web.app/"
       title="Best site to share your hard-earned certificates from Dapp"
       twitter-user="DeGuild"
       hashtags="DeGuild,Skill"
