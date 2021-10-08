@@ -1,10 +1,22 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Home from '../views/Home.vue';
+import Tester from '../views/_Sandbox.vue';
+import ConnectWallet from '../views/CertificateSite.vue';
 
 const routes = [
   {
     path: '/',
     name: 'Home',
+    component: ConnectWallet,
+  },
+  {
+    path: '/testing',
+    name: 'testing',
+    component: Tester,
+  },
+  {
+    path: '/connectWallet',
+    name: 'connect',
     component: Home,
   },
   {
