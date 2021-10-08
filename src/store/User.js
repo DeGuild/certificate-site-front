@@ -6,6 +6,7 @@ export const UserModule = {
     certificates: null,
     certificateSelected: null,
     certificateToFetch: null,
+    certificatePage: 0,
     dialog: '',
   },
   mutations: {
@@ -24,6 +25,9 @@ export const UserModule = {
     SET_DIALOG(state, text) {
       state.dialog = text;
     },
+    SET_PAGE(state, text) {
+      state.certificatePage = text;
+    },
   },
   actions: {
     setUser({ commit }, user) {
@@ -38,6 +42,9 @@ export const UserModule = {
     setCertificateToFetch({ commit }, cert) {
       commit('SET_TO_FETCH_CERTIFICATE', cert);
     },
+    setCertificatePage({ commit }, page) {
+      commit('SET_PAGE', page);
+    },
     setDialog({ commit }, text) {
       commit('SET_DIALOG', text);
     },
@@ -47,6 +54,7 @@ export const UserModule = {
       commit('SET_CHOSEN_CERTIFICATE', null);
       commit('SET_TO_FETCH_CERTIFICATE', null);
       commit('SET_DIALOG', '');
+      commit('SET_PAGE', 0);
     },
   },
   modules: {},

@@ -30,6 +30,7 @@ export default {
 
     async function fetchAllCertificates(nextToFetch) {
       let response = null;
+      // console.log(nextToFetch);
       if (nextToFetch) {
         // console.log(`https://us-central1-deguild-2021.cloudfunctions.net/app/allCertificates/${nextToFetch}/next`);
         response = await fetch(
@@ -46,11 +47,11 @@ export default {
       // waits until the request completes...
       state.certificateSet = await response.json();
       // console.log(state.certificateSet.result[state.certificateSet.result.length - 1]);
-      store.dispatch(
-        'User/setCertificateToFetch',
-        state.certificateSet.result[state.certificateSet.result.length - 1],
-      );
+      const next = state.certificateSet.result[state.certificateSet.result.length - 1];
+      store.dispatch('User/setCertificateToFetch', next);
+      return state.certificateSet;
     }
+
     async function getName(address) {
       const certificateManager = new web3.eth.Contract(abi, address);
       const caller = await certificateManager.methods.name().call();
@@ -102,9 +103,7 @@ export default {
 
     async function userCertificateChecker(address) {
       const hasCertificateResult = await hasCertificate(address);
-      const certificateArray = store.state.User.certificates
-        ? store.state.User.certificates
-        : [];
+      const certificateArray = [];
       if (hasCertificateResult) {
         const name = await getName(address);
         const imageUrl = await fetch(
@@ -113,14 +112,18 @@ export default {
         );
 
         const dataUrl = await imageUrl.json();
-        certificateArray.push([name, dataUrl, address]);
-        // [name, imageUrl, element]
+        certificateArray.push(name);
+        certificateArray.push(dataUrl);
+        certificateArray.push(address);
       }
-      store.dispatch('User/setCertificates', certificateArray);
+      return certificateArray;
+      // await store.dispatch(
+      //   'User/setCertificateToFetch',
+      //   address,
+      // );
     }
 
     async function connectWallet() {
-        
       store.dispatch('User/reset');
 
       if (window.ethereum) {
@@ -137,18 +140,22 @@ export default {
           )}`;
           state.primary = connectedAddress;
           store.dispatch('User/setUser', accounts.result[0]);
+          let next = state.certificateSet.result.length;
+          let toAdd = [];
 
-          while (
-            state.certificateSet.result.length > 0
-            && store.state.User.certificates
-              ? store.state.User.certificates.length === 8
-              : true
-          ) {
+          while (next > 0) {
             // console.log("Let's fetch them with web3");
-            state.certificateSet.result.forEach(async (element) => {
-              await userCertificateChecker(element);
-            });
-            await fetchAllCertificates(store.state.User.certificateToFetch);
+
+            const cersVerified = await Promise.all(
+              state.certificateSet.result.map(userCertificateChecker),
+            );
+            // console.log(cersVerified);
+
+            toAdd = toAdd.concat(cersVerified);
+            // store.dispatch('User/setCertificates', toAdd);
+            store.dispatch('User/setCertificates', toAdd);
+            next = await fetchAllCertificates(store.state.User.certificateToFetch);
+            // console.log(state.certificateSet.result);
           }
 
           return true;

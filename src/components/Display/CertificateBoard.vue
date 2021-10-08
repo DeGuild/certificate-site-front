@@ -23,8 +23,20 @@
     </div>
   </div>
 
-  <button class="navButton previous" v-on:click="dummy()">&#62;</button>
-  <button class="navButton" v-on:click="dummy()">&#60;</button>
+  <button
+    class="navButton previous"
+    v-on:click="navigate(state.pageIdx - 1)"
+    v-if="state.pageIdx > 0"
+  >
+    &#60;
+  </button>
+  <button
+    class="navButton"
+    v-on:click="navigate(state.pageIdx + 1)"
+    v-if="state.pageIdx < (state.images.length / 8)-1"
+  >
+    &#62;
+  </button>
   <div class="image selected" v-if="state.imageSelected">
     <img class="image selected display" :src="state.imageSelected" />
   </div>
@@ -40,30 +52,39 @@ export default defineComponent({
     // const balances = 0;
     const store = useStore();
 
-    /**
-     * TODO:
-     */
     function urlExtractor(proxy) {
       const urlArr = [];
       for (let index = 0; index < proxy.length; index += 1) {
-        urlArr.push(proxy[index][1].imageUrl);
+        if (proxy[index].length !== 0) urlArr.push(proxy[index][1].imageUrl);
       }
       return urlArr;
     }
-
+    function computeImages() {
+      const page = [];
+      const certs = store.state.User.certificates
+        ? urlExtractor(store.state.User.certificates)
+        : store.state.User.certificates;
+      const startIdx = 0 + store.state.User.certificatePage * 8;
+      // console.log(certs);
+      if (certs) {
+        const amount = startIdx + 8 < certs.length ? startIdx + 8 : certs.length;
+        for (let index = startIdx; index < amount; index += 1) {
+          const element = certs[index];
+          page.push(element);
+        }
+      }
+      return page;
+    }
+    function computeImageSeleted() {
+      const good = store.state.User.certificateSelected
+        ? store.state.User.certificateSelected
+        : store.state.User.certificateSelected;
+      return good;
+    }
     const state = reactive({
-      imageSelected: computed(() => {
-        const good = store.state.User.certificateSelected
-          ? store.state.User.certificateSelected
-          : store.state.User.certificateSelected;
-        return good;
-      }),
-      images: computed(() => {
-        const good = store.state.User.certificates
-          ? urlExtractor(store.state.User.certificates)
-          : store.state.User.certificates;
-        return good;
-      }),
+      imageSelected: computed(computeImageSeleted),
+      images: computed(computeImages),
+      pageIdx: computed(() => store.state.User.certificatePage),
       styles: [
         {
           left: '10vw',
@@ -133,15 +154,43 @@ export default defineComponent({
         },
       ],
     });
-    function dummy() {
-      // console.log(state.images);
-    }
+
     function choosing(imageIdx) {
       store.dispatch('User/setChosenCertificate', state.images[imageIdx]);
     }
+    // async function fetchAllCertificates(nextToFetch) {
+    //   let response = null;
+    //   if (nextToFetch) {
+    //     // console.log(`https://us-central1-deguild-2021.cloudfunctions.net/app/allCertificates/${nextToFetch}/next`);
+    //     response = await fetch(
+    //       `https://us-central1-deguild-2021.cloudfunctions.net/app/allCertificates/${nextToFetch}/next`,
+    //       { mode: 'cors' },
+    //     );
+    //   } else {
+    //     response = await fetch(
+    //       'https://us-central1-deguild-2021.cloudfunctions.net/app/allCertificatesOnce',
+    //       { mode: 'cors' },
+    //     );
+    //   }
+
+    //   // waits until the request completes...
+    //   state.certificateSet = await response.json();
+    //   // console.log(state.certificateSet.result[state.certificateSet.result.length - 1]);
+    //   store.dispatch(
+    //     'User/setCertificateToFetch',
+    //     state.certificateSet.result[state.certificateSet.result.length - 1],
+    //   );
+    // }
+    async function navigate(pageIdx) {
+      // await fetchAllCertificates();
+
+      store.dispatch('User/setCertificatePage', pageIdx);
+      // console.log(store.state.User.certificatePage);
+      return true;
+    }
     return {
       state,
-      dummy,
+      navigate,
       choosing,
     };
   },
@@ -193,7 +242,7 @@ export default defineComponent({
 
   width: 5.171vw;
   height: 2.727vw;
-  left: 7.292vw;
+  left: 50.885vw;
   top: 49.635vw;
   position: absolute;
 
@@ -223,7 +272,7 @@ export default defineComponent({
     0px 3px 4px rgba(123, 12, 12, 0.12), 0px 1px 5px rgba(136, 13, 13, 0.2);
 
   &.previous {
-    left: 50.885vw;
+    left: 7.292vw;
   }
 
   &:hover {
