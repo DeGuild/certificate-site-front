@@ -33,7 +33,7 @@
   <button
     class="navButton"
     v-on:click="navigate(state.pageIdx + 1)"
-    v-if="state.pageIdx < (state.images.length / 8)-1"
+    v-if="state.pageIdx < state.images.length / 8 - 1"
   >
     &#62;
   </button>
@@ -59,6 +59,13 @@ export default defineComponent({
       }
       return urlArr;
     }
+    function nameExtractor(proxy) {
+      const urlArr = [];
+      for (let index = 0; index < proxy.length; index += 1) {
+        if (proxy[index].length !== 0) urlArr.push(proxy[index][0]);
+      }
+      return urlArr;
+    }
     function computeImages() {
       const page = [];
       const certs = store.state.User.certificates
@@ -75,15 +82,26 @@ export default defineComponent({
       }
       return page;
     }
-    function computeImageSeleted() {
-      const good = store.state.User.certificateSelected
-        ? store.state.User.certificateSelected
-        : store.state.User.certificateSelected;
-      return good;
+    function computeNames() {
+      const page = [];
+      const certs = store.state.User.certificates
+        ? nameExtractor(store.state.User.certificates)
+        : store.state.User.certificates;
+      const startIdx = 0 + store.state.User.certificatePage * 8;
+      // console.log(certs);
+      if (certs) {
+        const amount = startIdx + 8 < certs.length ? startIdx + 8 : certs.length;
+        for (let index = startIdx; index < amount; index += 1) {
+          const element = certs[index];
+          page.push(element);
+        }
+      }
+      return page;
     }
     const state = reactive({
-      imageSelected: computed(computeImageSeleted),
+      imageSelected: computed(() => store.state.User.certificateSelected),
       images: computed(computeImages),
+      names: computed(computeNames),
       pageIdx: computed(() => store.state.User.certificatePage),
       styles: [
         {
@@ -156,31 +174,11 @@ export default defineComponent({
     });
 
     function choosing(imageIdx) {
+      const displayText = `Amazing! You have learned ${state.names[imageIdx]}`;
       store.dispatch('User/setChosenCertificate', state.images[imageIdx]);
+      store.dispatch('User/setDialog', displayText);
     }
-    // async function fetchAllCertificates(nextToFetch) {
-    //   let response = null;
-    //   if (nextToFetch) {
-    //     // console.log(`https://us-central1-deguild-2021.cloudfunctions.net/app/allCertificates/${nextToFetch}/next`);
-    //     response = await fetch(
-    //       `https://us-central1-deguild-2021.cloudfunctions.net/app/allCertificates/${nextToFetch}/next`,
-    //       { mode: 'cors' },
-    //     );
-    //   } else {
-    //     response = await fetch(
-    //       'https://us-central1-deguild-2021.cloudfunctions.net/app/allCertificatesOnce',
-    //       { mode: 'cors' },
-    //     );
-    //   }
 
-    //   // waits until the request completes...
-    //   state.certificateSet = await response.json();
-    //   // console.log(state.certificateSet.result[state.certificateSet.result.length - 1]);
-    //   store.dispatch(
-    //     'User/setCertificateToFetch',
-    //     state.certificateSet.result[state.certificateSet.result.length - 1],
-    //   );
-    // }
     async function navigate(pageIdx) {
       // await fetchAllCertificates();
 

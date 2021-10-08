@@ -2,23 +2,18 @@
   <div v-if="state.imageSelected">
     <ShareNetwork
       network="facebook"
-      url="https://blockchain-land.firebaseapp.com/login"
-      :title="this.primary"
-      description="fuck u"
-      hashtags="NewSkillBetterMe"
+      url="https://certificate-manager.firebaseapp.com/"
+      hashtags="DeGuild,Skill"
     >
       <div class="facebook"></div>
     </ShareNetwork>
     <ShareNetwork
       network="twitter"
-      url="https://blockchain-land.firebaseapp.com/login"
-      :title="this.primary"
-      quote="The hot reload is so fast it\'s near instant. - Evan You"
-      hashtags="NewSkillBetterMe"
-      twitterUser="youyuxi"
+      url="https://certificate-manager.firebaseapp.com/"
+      title="Best site to share your hard earned certificates from Dapp"
+      twitter-user="DeGuild"
+      hashtags="DeGuild,Skill"
     >
-      <!-- <i class="fab fah fa-lg fa-twitter"></i>
-    <span>Share on Twitter</span> -->
       <div class="twitter"></div>
     </ShareNetwork>
   </div>

@@ -7,7 +7,7 @@ export const UserModule = {
     certificateSelected: null,
     certificateToFetch: null,
     certificatePage: 0,
-    dialog: '',
+    dialog: 'Share your certificate and show your skill!',
   },
   mutations: {
     SET_USER(state, user) {
@@ -53,7 +53,7 @@ export const UserModule = {
       commit('SET_CERTIFICATES', null);
       commit('SET_CHOSEN_CERTIFICATE', null);
       commit('SET_TO_FETCH_CERTIFICATE', null);
-      commit('SET_DIALOG', '');
+      commit('SET_DIALOG', 'Share your certificate and show your skill!');
       commit('SET_PAGE', 0);
     },
   },
