@@ -5,6 +5,8 @@
 </template>
 
 <script>
+/* eslint-disable no-await-in-loop */
+
 import { useStore } from 'vuex';
 import { reactive, onBeforeMount } from 'vue';
 
@@ -26,6 +28,29 @@ export default {
     });
     const web3 = new Web3(Web3.givenProvider || 'ws://localhost:8545');
 
+    async function fetchAllCertificates(nextToFetch) {
+      let response = null;
+      if (nextToFetch) {
+        // console.log(`https://us-central1-deguild-2021.cloudfunctions.net/app/allCertificates/${nextToFetch}/next`);
+        response = await fetch(
+          `https://us-central1-deguild-2021.cloudfunctions.net/app/allCertificates/${nextToFetch}/next`,
+          { mode: 'cors' },
+        );
+      } else {
+        response = await fetch(
+          'https://us-central1-deguild-2021.cloudfunctions.net/app/allCertificatesOnce',
+          { mode: 'cors' },
+        );
+      }
+
+      // waits until the request completes...
+      state.certificateSet = await response.json();
+      // console.log(state.certificateSet.result[state.certificateSet.result.length - 1]);
+      store.dispatch(
+        'User/setCertificateToFetch',
+        state.certificateSet.result[state.certificateSet.result.length - 1],
+      );
+    }
     async function getName(address) {
       const certificateManager = new web3.eth.Contract(abi, address);
       const caller = await certificateManager.methods.name().call();
@@ -75,7 +100,29 @@ export default {
       store.dispatch('User/setUser', null);
     }
 
+    async function userCertificateChecker(address) {
+      const hasCertificateResult = await hasCertificate(address);
+      const certificateArray = store.state.User.certificates
+        ? store.state.User.certificates
+        : [];
+      if (hasCertificateResult) {
+        const name = await getName(address);
+        const imageUrl = await fetch(
+          `https://us-central1-deguild-2021.cloudfunctions.net/app/readCertificate/${address}`,
+          { mode: 'cors' },
+        );
+
+        const dataUrl = await imageUrl.json();
+        certificateArray.push([name, dataUrl, address]);
+        // [name, imageUrl, element]
+      }
+      store.dispatch('User/setCertificates', certificateArray);
+    }
+
     async function connectWallet() {
+        
+      store.dispatch('User/reset');
+
       if (window.ethereum) {
         try {
           const accounts = await window.ethereum.send('eth_requestAccounts');
@@ -90,27 +137,20 @@ export default {
           )}`;
           state.primary = connectedAddress;
           store.dispatch('User/setUser', accounts.result[0]);
-          // const ownedCertificates = [];
-          state.certificateSet.result.forEach(async (element) => {
-            const hasCertificateResult = await hasCertificate(element);
-            if (hasCertificateResult) {
-              const name = await getName(element);
-              const imageUrl = await fetch(
-                `https://us-central1-deguild-2021.cloudfunctions.net/app/readCertificate/${element}`,
-                { mode: 'cors' },
-              );
-              const certificateArray = store.state.User.certificate
-                ? store.state.User.certificate
-                : [];
-              const dataUrl = await imageUrl.json();
-              certificateArray.push([name, dataUrl, element]);
-              store.dispatch('User/setCertificates', certificateArray);
-              // [name, imageUrl, element]
-            }
 
-            // ownedCertificates
-            // console.log(hasCertificateResult);
-          });
+          while (
+            state.certificateSet.result.length > 0
+            && store.state.User.certificates
+              ? store.state.User.certificates.length === 8
+              : true
+          ) {
+            // console.log("Let's fetch them with web3");
+            state.certificateSet.result.forEach(async (element) => {
+              await userCertificateChecker(element);
+            });
+            await fetchAllCertificates(store.state.User.certificateToFetch);
+          }
+
           return true;
         } catch (error) {
           // console.error(error);
@@ -144,12 +184,7 @@ export default {
         state.primary = 'CONNECT WALLET';
       }
       await verifyNetwork();
-      const response = await fetch(
-        'https://us-central1-deguild-2021.cloudfunctions.net/app/allCertificates',
-        { mode: 'cors' },
-      );
-      // waits until the request completes...
-      state.certificateSet = await response.json();
+      await fetchAllCertificates();
 
       window.ethereum.on('accountsChanged', handleAccountsChanged);
       window.ethereum.on('chainChanged', handleChainChanged);
