@@ -5,10 +5,16 @@
 </template>
 
 <script>
+/* eslint-disable no-await-in-loop */
+
 import { useStore } from 'vuex';
 import { reactive, onBeforeMount } from 'vue';
 
 const Web3 = require('web3');
+
+const {
+  abi,
+} = require('../../../../DeGuild-MG-CS-Token-contracts/artifacts/contracts/SkillCertificates/ISkillCertificate.sol/ISkillCertificate.json');
 
 export default {
   name: 'ConnectWallet',
@@ -18,10 +24,53 @@ export default {
       primary: 'SOMETHING WENT WRONG',
       btn1style: {},
       network: '',
+      certificateSet: null,
     });
+    const web3 = new Web3(Web3.givenProvider || 'ws://localhost:8545');
+
+    async function fetchAllCertificates(nextToFetch) {
+      let response = null;
+      // console.log(nextToFetch);
+      if (nextToFetch) {
+        // console.log(`https://us-central1-deguild-2021.cloudfunctions.net/app/allCertificates/${nextToFetch}/next`);
+        response = await fetch(
+          `https://us-central1-deguild-2021.cloudfunctions.net/app/allCertificates/${nextToFetch}/next`,
+          { mode: 'cors' },
+        );
+      } else {
+        response = await fetch(
+          'https://us-central1-deguild-2021.cloudfunctions.net/app/allCertificatesOnce',
+          { mode: 'cors' },
+        );
+      }
+
+      // waits until the request completes...
+      state.certificateSet = await response.json();
+      // console.log(state.certificateSet.result[state.certificateSet.result.length - 1]);
+      const next = state.certificateSet.result[state.certificateSet.result.length - 1];
+      store.dispatch('User/setCertificateToFetch', next);
+      return state.certificateSet;
+    }
+
+    async function getName(address) {
+      const certificateManager = new web3.eth.Contract(abi, address);
+      const caller = await certificateManager.methods.name().call();
+      return caller;
+    }
+
+    async function hasCertificate(address) {
+      const certificateManager = new web3.eth.Contract(abi, address);
+      // console.log(store.state.User.user);
+
+      const caller = await certificateManager.methods
+        .verify(store.state.User.user)
+        .call();
+      return caller;
+    }
+
+    // console.log(certificateManager.methods);
 
     async function verifyNetwork() {
-      const web3 = new Web3(Web3.givenProvider || 'ws://localhost:8545');
       state.network = await web3.eth.net.getNetworkType();
 
       if (state.network !== 'rinkeby') {
@@ -52,7 +101,31 @@ export default {
       store.dispatch('User/setUser', null);
     }
 
+    async function userCertificateChecker(address) {
+      const hasCertificateResult = await hasCertificate(address);
+      const certificateArray = [];
+      if (hasCertificateResult) {
+        const name = await getName(address);
+        const imageUrl = await fetch(
+          `https://us-central1-deguild-2021.cloudfunctions.net/app/readCertificate/${address}`,
+          { mode: 'cors' },
+        );
+
+        const dataUrl = await imageUrl.json();
+        certificateArray.push(name);
+        certificateArray.push(dataUrl);
+        certificateArray.push(address);
+      }
+      return certificateArray;
+      // await store.dispatch(
+      //   'User/setCertificateToFetch',
+      //   address,
+      // );
+    }
+
     async function connectWallet() {
+      store.dispatch('User/reset');
+
       if (window.ethereum) {
         try {
           const accounts = await window.ethereum.send('eth_requestAccounts');
@@ -67,6 +140,24 @@ export default {
           )}`;
           state.primary = connectedAddress;
           store.dispatch('User/setUser', accounts.result[0]);
+          let next = state.certificateSet.result.length;
+          let toAdd = [];
+
+          while (next > 0) {
+            // console.log("Let's fetch them with web3");
+
+            const cersVerified = await Promise.all(
+              state.certificateSet.result.map(userCertificateChecker),
+            );
+            // console.log(cersVerified);
+
+            toAdd = toAdd.concat(cersVerified);
+            // store.dispatch('User/setCertificates', toAdd);
+            store.dispatch('User/setCertificates', toAdd);
+            next = await fetchAllCertificates(store.state.User.certificateToFetch);
+            // console.log(state.certificateSet.result);
+          }
+
           return true;
         } catch (error) {
           // console.error(error);
@@ -100,6 +191,7 @@ export default {
         state.primary = 'CONNECT WALLET';
       }
       await verifyNetwork();
+      await fetchAllCertificates();
 
       window.ethereum.on('accountsChanged', handleAccountsChanged);
       window.ethereum.on('chainChanged', handleChainChanged);
@@ -111,7 +203,10 @@ export default {
         await connectToRinkeby();
         return false;
       }
-      return connectWallet();
+      await connectWallet();
+      // console.log(data);
+      // console.log('we', caller);
+      return true;
     }
 
     return {

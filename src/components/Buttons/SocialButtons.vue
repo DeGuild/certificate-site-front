@@ -1,76 +1,42 @@
 <template>
-  <ShareNetwork
-    network="facebook"
-    url="https://blockchain-land.firebaseapp.com/login"
-    :title="this.primary"
-    description="fuck u"
-    hashtags="NewSkillBetterMe"
-  >
-    <div class="facebook"></div>
-  </ShareNetwork>
-  <ShareNetwork
-    network="twitter"
-    url="https://blockchain-land.firebaseapp.com/login"
-    :title="this.primary"
-    quote="The hot reload is so fast it\'s near instant. - Evan You"
-    hashtags="NewSkillBetterMe"
-    twitterUser="youyuxi"
-  >
-    <!-- <i class="fab fah fa-lg fa-twitter"></i>
-    <span>Share on Twitter</span> -->
-    <div class="twitter"></div>
-  </ShareNetwork>
+  <div v-if="state.imageSelected">
+    <ShareNetwork
+      network="facebook"
+      url="https://certificate-manager.firebaseapp.com/"
+      hashtags="DeGuild,Skill"
+    >
+      <div class="facebook"></div>
+    </ShareNetwork>
+    <ShareNetwork
+      network="twitter"
+      url="https://certificate-manager.firebaseapp.com/"
+      title="Best site to share your hard earned certificates from Dapp"
+      twitter-user="DeGuild"
+      hashtags="DeGuild,Skill"
+    >
+      <div class="twitter"></div>
+    </ShareNetwork>
+  </div>
 </template>
 
 <script>
+import { useStore } from 'vuex';
+import { reactive, computed } from 'vue';
+
 export default {
-  name: 'Buttons',
-  data() {
-    return {
-      primary: 'Button 1',
-      success: 'Success',
+  name: 'SocialButtons',
+  setup() {
+    const store = useStore();
+    const state = reactive({
+      primary: 'SOMETHING WENT WRONG',
       btn1style: {},
-      btn4style: {},
-      danger: 'Button 3',
-      info: '<i class="fas fa-info"></i> Info',
-      colors: {
-        success: '#1CA650',
-      },
+      network: '',
+      imageSelected: computed(() => store.state.User.certificateSelected),
+    });
+
+    return {
+      state,
     };
-  },
-  methods: {
-    finishTask() {
-      this.primary = "<i class='fas fa-spinner fa-spin'></i>";
-      setTimeout(() => {
-        this.primary = 'Done!';
-      }, 2500);
-    },
-
-    progressTask() {
-      const duration = 2500;
-      this.btn1style = {
-        boxShadow: 'inset 120px 0px 0px 0px #1CA650',
-        transitionDuration: `${duration}ms`,
-      };
-      setTimeout(() => {
-        this.success = 'Finished';
-      }, duration);
-    },
-
-    failTask() {
-      this.danger = "<i class='fas fa-spinner fa-spin'></i>";
-      setTimeout(() => {
-        this.danger = "<i class='far fa-frown'></i> Failed!";
-      }, 2500);
-    },
-
-    infoTask() {
-      const duration = 1000;
-      this.btn4style = {
-        boxShadow: 'inset 0px 0px 300px 120px rgba(0,0,0,1)',
-        transitionDuration: `${duration}ms`,
-      };
-    },
   },
 };
 </script>

@@ -1,14 +1,35 @@
 <template>
   <div class="dialog">
-    <div class="dialog-text">Share your certificate and show your skill!</div>
+    <div
+      class="dialog-text"
+      v-bind:class="{ smaller: state.dialogStyle }"
+    >
+      {{ state.dialog }}
+    </div>
   </div>
   <div class="npc"></div>
 </template>
 
 <script>
-export default {
+import { useStore } from 'vuex';
+import { defineComponent, reactive, computed } from 'vue';
+
+export default defineComponent({
   name: 'Background',
-};
+  setup() {
+    // const balances = 0;
+    const store = useStore();
+    const state = reactive({
+      dialog: computed(() => store.state.User.dialog),
+      dialogStyle: computed(() => (store.state.User.dialog.length > 45)),
+      // dialogStyle: { 'font-size': '1vw' },
+    });
+
+    return {
+      state,
+    };
+  },
+});
 </script>
 <style scoped lang="scss">
 .dialog {
@@ -25,7 +46,7 @@ export default {
   /* Share your certificate and show your skill! */
   position: absolute;
   width: 60vw;
-  height: 13.1vw;
+  height: 3vw;
   left: 5vw;
   top: 5.5vw;
   font-family: Secular One;
@@ -36,6 +57,11 @@ export default {
   color: #ffffff;
   background: '';
   background-size: cover;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  &.smaller {
+    font-size: 1.55vw;
+  }
 }
 .npc {
   position: absolute;

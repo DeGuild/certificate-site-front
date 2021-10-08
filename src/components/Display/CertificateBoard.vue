@@ -4,49 +4,106 @@
   </div> -->
   <div class="background"></div>
   <div v-for="imageIndex in 8" :key="imageIndex">
-    <div class="background frame" :style="state.stylesFrame[imageIndex]"></div>
-
-    <div class="image" :style="state.styles[imageIndex]">
-      <img
-        class="image display click"
-        :style="state.styles[imageIndex]"
-        :src="state.images[imageIndex]"
-        v-if="state.images[imageIndex]"
-        v-on:click="choosing(imageIndex)"
-      />
+    <div
+      class="background frame"
+      :style="state.stylesFrame[imageIndex - 1]"
+    ></div>
+    <div v-if="state.images">
+      <div v-if="state.images[imageIndex - 1]">
+        <div class="image" :style="state.styles[imageIndex - 1]">
+          <img
+            class="image display click"
+            :style="state.styles[imageIndex - 1]"
+            :src="state.images[imageIndex - 1]"
+            v-if="state.images[imageIndex - 1]"
+            v-on:click="choosing(imageIndex - 1)"
+          />
+        </div>
+      </div>
     </div>
   </div>
-  <button class="navButton previous" v-on:click="dummy()">&#62;</button>
-  <button class="navButton" v-on:click="dummy()">&#60;</button>
-  <div class="image selected">
+
+  <button
+    class="navButton previous"
+    v-on:click="navigate(state.pageIdx - 1)"
+    v-if="state.pageIdx > 0"
+  >
+    &#60;
+  </button>
+  <button
+    class="navButton"
+    v-on:click="navigate(state.pageIdx + 1)"
+    v-if="state.pageIdx < state.images.length / 8 - 1"
+  >
+    &#62;
+  </button>
+  <div class="image selected" v-if="state.imageSelected">
     <img class="image selected display" :src="state.imageSelected" />
   </div>
 </template>
 
 <script>
-import { defineComponent, reactive } from 'vue';
+import { defineComponent, reactive, computed } from 'vue';
+import { useStore } from 'vuex';
 
 export default defineComponent({
   name: 'CertificateBoard',
   setup() {
     // const balances = 0;
+    const store = useStore();
 
+    function urlExtractor(proxy) {
+      const urlArr = [];
+      for (let index = 0; index < proxy.length; index += 1) {
+        if (proxy[index].length !== 0) urlArr.push(proxy[index][1].imageUrl);
+      }
+      return urlArr;
+    }
+    function nameExtractor(proxy) {
+      const urlArr = [];
+      for (let index = 0; index < proxy.length; index += 1) {
+        if (proxy[index].length !== 0) urlArr.push(proxy[index][0]);
+      }
+      return urlArr;
+    }
+    function computeImages() {
+      const page = [];
+      const certs = store.state.User.certificates
+        ? urlExtractor(store.state.User.certificates)
+        : store.state.User.certificates;
+      const startIdx = 0 + store.state.User.certificatePage * 8;
+      // console.log(certs);
+      if (certs) {
+        const amount = startIdx + 8 < certs.length ? startIdx + 8 : certs.length;
+        for (let index = startIdx; index < amount; index += 1) {
+          const element = certs[index];
+          page.push(element);
+        }
+      }
+      return page;
+    }
+    function computeNames() {
+      const page = [];
+      const certs = store.state.User.certificates
+        ? nameExtractor(store.state.User.certificates)
+        : store.state.User.certificates;
+      const startIdx = 0 + store.state.User.certificatePage * 8;
+      // console.log(certs);
+      if (certs) {
+        const amount = startIdx + 8 < certs.length ? startIdx + 8 : certs.length;
+        for (let index = startIdx; index < amount; index += 1) {
+          const element = certs[index];
+          page.push(element);
+        }
+      }
+      return page;
+    }
     const state = reactive({
-      imageSelected: 'https://placekitten.com/801/800',
-      images: [
-        'https://placekitten.com/801/800',
-        'https://placekitten.com/802/800',
-        'https://placekitten.com/803/800',
-        'https://placekitten.com/801/800',
-        'https://placekitten.com/802/800',
-        'https://placekitten.com/803/800',
-        'https://placekitten.com/801/800',
-        'https://placekitten.com/802/800',
-        'https://placekitten.com/803/800',
-        'https://placekitten.com/803/800',
-      ],
+      imageSelected: computed(() => store.state.User.certificateSelected),
+      images: computed(computeImages),
+      names: computed(computeNames),
+      pageIdx: computed(() => store.state.User.certificatePage),
       styles: [
-        {},
         {
           left: '10vw',
           top: '26.406vw',
@@ -81,7 +138,6 @@ export default defineComponent({
         },
       ],
       stylesFrame: [
-        {},
         {
           left: '9.4vw',
           top: '25.9vw',
@@ -116,13 +172,23 @@ export default defineComponent({
         },
       ],
     });
-    function dummy() {}
+
     function choosing(imageIdx) {
-      state.imageSelected = state.images[imageIdx];
+      const displayText = `Amazing! You have learned ${state.names[imageIdx]}`;
+      store.dispatch('User/setChosenCertificate', state.images[imageIdx]);
+      store.dispatch('User/setDialog', displayText);
+    }
+
+    async function navigate(pageIdx) {
+      // await fetchAllCertificates();
+
+      store.dispatch('User/setCertificatePage', pageIdx);
+      // console.log(store.state.User.certificatePage);
+      return true;
     }
     return {
       state,
-      dummy,
+      navigate,
       choosing,
     };
   },
@@ -142,7 +208,7 @@ export default defineComponent({
 
   &.click {
     cursor: pointer;
-    &:hover{
+    &:hover {
       opacity: 0.89;
     }
   }
@@ -153,7 +219,6 @@ export default defineComponent({
     left: 70.677vw;
     top: 24.115vw;
   }
-
 }
 .background {
   width: 52.031vw;
@@ -175,7 +240,7 @@ export default defineComponent({
 
   width: 5.171vw;
   height: 2.727vw;
-  left: 7.292vw;
+  left: 50.885vw;
   top: 49.635vw;
   position: absolute;
 
@@ -205,7 +270,7 @@ export default defineComponent({
     0px 3px 4px rgba(123, 12, 12, 0.12), 0px 1px 5px rgba(136, 13, 13, 0.2);
 
   &.previous {
-    left: 50.885vw;
+    left: 7.292vw;
   }
 
   &:hover {
