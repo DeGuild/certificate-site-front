@@ -10,7 +10,7 @@
     <ShareNetwork
       network="twitter"
       url="https://certificate-manager.firebaseapp.com/"
-      title="Best site to share your hard earned certificates from Dapp"
+      title="Best site to share your hard-earned certificates from Dapp"
       twitter-user="DeGuild"
       hashtags="DeGuild,Skill"
     >
