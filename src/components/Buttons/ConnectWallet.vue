@@ -1,6 +1,9 @@
 <template>
-  <div id="app">
+  <div v-if="!user">
     <button class="btn" @click="ethEnabled" v-html="state.primary"></button>
+  </div>
+  <div v-if="user">
+    <div class="btn connected" v-html="state.primary"></div>
   </div>
 </template>
 
@@ -8,7 +11,7 @@
 /* eslint-disable no-await-in-loop */
 
 import { useStore } from 'vuex';
-import { reactive, onBeforeMount } from 'vue';
+import { reactive, onBeforeMount, computed } from 'vue';
 
 const Web3 = require('web3');
 
@@ -20,6 +23,8 @@ export default {
   name: 'ConnectWallet',
   setup() {
     const store = useStore();
+    const user = computed(() => store.state.User.user);
+
     const state = reactive({
       primary: 'SOMETHING WENT WRONG',
       btn1style: {},
@@ -154,7 +159,9 @@ export default {
             toAdd = toAdd.concat(cersVerified);
             // store.dispatch('User/setCertificates', toAdd);
             store.dispatch('User/setCertificates', toAdd);
-            next = await fetchAllCertificates(store.state.User.certificateToFetch);
+            next = await fetchAllCertificates(
+              store.state.User.certificateToFetch,
+            );
             // console.log(state.certificateSet.result);
           }
 
@@ -211,6 +218,7 @@ export default {
 
     return {
       state,
+      user,
       ethEnabled,
     };
   },
@@ -253,10 +261,15 @@ export default {
   order: 0;
   flex-grow: 0;
   margin: 0px 0px;
-  cursor: pointer;
 
   &:hover {
     background: #cc3b3b;
+  }
+  &.connected {
+    &:hover {
+      background: #ff5252;
+    }
+    cursor: cursor;
   }
 }
 </style>

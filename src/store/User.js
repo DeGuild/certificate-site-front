@@ -8,6 +8,7 @@ export const UserModule = {
     certificateToFetch: null,
     certificatePage: 0,
     dialog: 'Share your certificate and show your skill!',
+    background: '../assets/cert_bg.png',
   },
   mutations: {
     SET_USER(state, user) {

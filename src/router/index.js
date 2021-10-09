@@ -1,17 +1,21 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import Tester from '../views/_Sandbox.vue';
-import CertificateSite from '../views/CertificateSite.vue';
 
 const routes = [
   {
     path: '/',
     name: 'Home',
-    component: CertificateSite,
+    component: () => import('../views/CertificateSite.vue'),
   },
   {
     path: '/testing',
     name: 'testing',
-    component: Tester,
+    component: () => import('../views/_Sandbox.vue'),
+  },
+  {
+    path: '/backhome',
+    beforeEnter() {
+      window.location.href = 'http://localhost:8080/';
+    },
   },
   {
     path: '/sharing/:address/:certificate',
