@@ -3,24 +3,47 @@
     <img class="image selected display" :src="state.imageSelected" />
   </div>
   <div class="image info">
-    <div class="text">Certificate Address: </div>
-    <div class="text">Owner Address: </div>
+    <div class="text">Certificate Address:</div>
+    <div class="text address">
+      {{
+        this.$route.params.certificate ? this.$route.params.certificate : '-'
+      }}
+    </div>
+    <div class="text">Owner Address:</div>
+    <div class="text address">
+      {{ this.$route.params.address ? this.$route.params.address : '-' }}
+    </div>
   </div>
 </template>
 
 <script>
-import { defineComponent, reactive } from 'vue';
+import { defineComponent, reactive, onBeforeMount } from 'vue';
 // import { useStore } from 'vuex';
+import { useRoute } from 'vue-router';
 
 export default defineComponent({
   name: 'SharingFrame',
   setup() {
     // const balances = 0;
     // const store = useStore();
+    const route = useRoute();
 
+    async function getImageUrl(address) {
+      const imageUrl = await fetch(
+        `https://us-central1-deguild-2021.cloudfunctions.net/app/readCertificate/${address}`,
+        { mode: 'cors' },
+      );
+
+      const dataUrl = await imageUrl.json();
+      console.log(dataUrl);
+      return dataUrl.imageUrl;
+    }
     const state = reactive({
       imageSelected:
-        'https://scontent.fbkk22-1.fna.fbcdn.net/v/t1.6435-9/45878479_10161252279455323_4524037980867788800_n.jpg?_nc_cat=1&ccb=1-5&_nc_sid=09cbfe&_nc_eui2=AeF3qP054lxacHUTWUgD6a5ILhIcwnXvjKcuEhzCde-Mpwlx2bJEHDA6W5oYEfz_zXrVgxHWB5adV4sAYYhH046V&_nc_ohc=ZAx1Vp_EQ2QAX-E_p1H&_nc_ht=scontent.fbkk22-1.fna&oh=700344b7dc01257b7542f7bd7e54fda7&oe=6187B66D',
+        '',
+    });
+    onBeforeMount(async () => {
+      state.imageSelected = await getImageUrl(route.params.certificate);
     });
 
     return {
@@ -58,24 +81,29 @@ export default defineComponent({
   &.info {
     position: absolute;
     width: 19.583vw;
-    height: 5vw;
+    height: 6vw;
     left: 40.208vw;
     top: 35.5vw;
     background: rgba(196, 196, 196, 0.42);
   }
 }
 .text {
-        top: 5.5vw;
+  top: 5.5vw;
 
   font-family: Secular One;
   font-style: normal;
   font-weight: normal;
-  font-size: 16px;
-  line-height: 23px;
+  font-size: 1.1vw;
+  line-height: 0.1vw;
   text-align: center;
   letter-spacing: 0.00892857em;
   text-transform: uppercase;
-
+  padding-top: 1.2vw;
   color: #ffffff;
+
+  &.address {
+    font-size: 0.7vw;
+    cursor: pointer;
+  }
 }
 </style>

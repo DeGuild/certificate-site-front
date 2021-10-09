@@ -1,26 +1,24 @@
 <template>
-  <Dialog />
+  <no-certificate></no-certificate>
   <sad></sad>
 </template>
 
 <script>
 import { useStore } from 'vuex';
 import { computed } from 'vue';
-import Dialog from '../components/General/Wow.vue';
 import Sad from '../components/General/Sad.vue';
+import NoCertificate from '../components/Display/NoCertificate.vue';
 // @ is an alias to /src
 
 export default {
   name: 'ConnectWalletSite',
   components: {
-    Dialog,
     Sad,
+    NoCertificate,
   },
   setup() {
     const store = useStore();
     const user = computed(() => store.state.User.user);
-    console.log(store.state.User.user);
-    console.log(user);
     return { user };
   },
 };
@@ -28,7 +26,7 @@ export default {
 
 <style>
 body {
-  background-image: url('../assets/wojaks.png');
+  background-image: url('../assets/cert_bg.png');
   background-size: cover;
   background-repeat: no-repeat;
   background-attachment: fixed;
