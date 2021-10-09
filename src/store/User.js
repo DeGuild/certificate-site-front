@@ -7,6 +7,7 @@ export const UserModule = {
     certificateSelected: null,
     certificateToFetch: null,
     certificatePage: 0,
+    certificateSharing: '',
     dialog: 'Share your certificate and show your skill!',
     background: '../assets/cert_bg.png',
   },
@@ -19,6 +20,9 @@ export const UserModule = {
     },
     SET_CHOSEN_CERTIFICATE(state, cer) {
       state.certificateSelected = cer;
+    },
+    SET_SHARING_CERTIFICATE(state, link) {
+      state.certificateSharing = link;
     },
     SET_TO_FETCH_CERTIFICATE(state, cer) {
       state.certificateToFetch = cer;
@@ -39,6 +43,9 @@ export const UserModule = {
     },
     setChosenCertificate({ commit }, cert) {
       commit('SET_CHOSEN_CERTIFICATE', cert);
+    },
+    setSharingCertificate({ commit }, link) {
+      commit('SET_SHARING_CERTIFICATE', link);
     },
     setCertificateToFetch({ commit }, cert) {
       commit('SET_TO_FETCH_CERTIFICATE', cert);

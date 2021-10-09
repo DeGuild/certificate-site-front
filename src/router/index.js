@@ -26,15 +26,15 @@ const routes = [
     name: 'Home',
     component: () => import('../views/CertificateSite.vue'),
   },
-  {
-    path: '/testing',
-    name: 'testing',
-    component: () => import('../views/_Sandbox.vue'),
-  },
+  // {
+  //   path: '/testing',
+  //   name: 'testing',
+  //   component: () => import('../views/_Sandbox.vue'),
+  // },
   {
     path: '/backhome',
     beforeEnter() {
-      window.location.href = 'http://localhost:8080/';
+      window.location.href = window.location.origin;
     },
   },
   {
@@ -56,7 +56,7 @@ const routes = [
       const hasCertificateResult = await hasCertificate(certificate, address);
       if (hasCertificateResult) {
         next();
-        console.log('verified');
+        // console.log('verified');
       }
       next('/unverified');
     },

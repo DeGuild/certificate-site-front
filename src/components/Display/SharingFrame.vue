@@ -35,7 +35,7 @@ export default defineComponent({
       );
 
       const dataUrl = await imageUrl.json();
-      console.log(dataUrl);
+      // console.log(dataUrl);
       return dataUrl.imageUrl;
     }
     const state = reactive({

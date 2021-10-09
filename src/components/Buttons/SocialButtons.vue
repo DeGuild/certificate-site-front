@@ -1,15 +1,11 @@
 <template>
-  <div v-if="state.imageSelected">
-    <ShareNetwork
-      network="facebook"
-      url="https://certificate-manager.web.app/"
-      hashtags="DeGuild,Skill"
-    >
+  <div v-if="$store.state.User.certificateSelected">
+    <ShareNetwork network="facebook" :url="sharingUrl" hashtags="DeGuild,Skill">
       <div class="facebook"></div>
     </ShareNetwork>
     <ShareNetwork
       network="twitter"
-      url="https://certificate-manager.web.app/"
+      :url="sharingUrl"
       title="Best site to share your hard-earned certificates from Dapp"
       twitter-user="DeGuild"
       hashtags="DeGuild,Skill"
@@ -31,7 +27,13 @@ export default {
       primary: 'SOMETHING WENT WRONG',
       btn1style: {},
       network: '',
-      imageSelected: computed(() => store.state.User.certificateSelected),
+      sharingUrl: computed(
+        () => `${window.location.origin}/${store.state.User.user}/${
+          store.state.User.certificateSelected
+            ? store.state.User.certificateSelected[1]
+            : null
+        }`,
+      ),
     });
 
     return {
