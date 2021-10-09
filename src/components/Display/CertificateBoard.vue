@@ -66,6 +66,13 @@ export default defineComponent({
       }
       return urlArr;
     }
+    function addressExtractor(proxy) {
+      const urlArr = [];
+      for (let index = 0; index < proxy.length; index += 1) {
+        if (proxy[index].length !== 0) urlArr.push(proxy[index][2]);
+      }
+      return urlArr;
+    }
     function computeImages() {
       const page = [];
       const certs = store.state.User.certificates
@@ -98,10 +105,29 @@ export default defineComponent({
       }
       return page;
     }
+    function computeAddresses() {
+      const page = [];
+      const certs = store.state.User.certificates
+        ? addressExtractor(store.state.User.certificates)
+        : store.state.User.certificates;
+      const startIdx = 0 + store.state.User.certificatePage * 8;
+      // console.log(certs);
+      if (certs) {
+        const amount = startIdx + 8 < certs.length ? startIdx + 8 : certs.length;
+        for (let index = startIdx; index < amount; index += 1) {
+          const element = certs[index];
+          page.push(element);
+        }
+      }
+      return page;
+    }
     const state = reactive({
-      imageSelected: computed(() => store.state.User.certificateSelected),
+      imageSelected: computed(() => (store.state.User.certificateSelected
+        ? store.state.User.certificateSelected[0]
+        : null)),
       images: computed(computeImages),
       names: computed(computeNames),
+      addresses: computed(computeAddresses),
       pageIdx: computed(() => store.state.User.certificatePage),
       styles: [
         {
@@ -175,7 +201,14 @@ export default defineComponent({
 
     function choosing(imageIdx) {
       const displayText = `Amazing! You have learned ${state.names[imageIdx]}`;
-      store.dispatch('User/setChosenCertificate', state.images[imageIdx]);
+      store.dispatch('User/setChosenCertificate', [
+        state.images[imageIdx],
+        store.state.User.certificates[imageIdx][2],
+      ]);
+      store.dispatch(
+        'User/setSharingCertificate',
+        `${window.location.origin}/sharing/${store.state.User.user}/${state.addresses[imageIdx]}`,
+      );
       store.dispatch('User/setDialog', displayText);
     }
 

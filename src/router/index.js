@@ -1,31 +1,65 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import Home from '../views/Home.vue';
-import Tester from '../views/_Sandbox.vue';
-import ConnectWallet from '../views/CertificateSite.vue';
 
+const Web3 = require('web3');
+
+const {
+  abi,
+} = require('../../../DeGuild-MG-CS-Token-contracts/artifacts/contracts/SkillCertificates/ISkillCertificate.sol/ISkillCertificate.json');
+
+const web3 = new Web3(Web3.givenProvider || 'ws://localhost:8545');
+
+async function hasCertificate(address, user) {
+  try {
+    const certificateManager = new web3.eth.Contract(abi, address);
+    // console.log(store.state.User.user);
+
+    const caller = await certificateManager.methods.verify(user).call();
+    return caller;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+}
 const routes = [
   {
     path: '/',
     name: 'Home',
-    component: ConnectWallet,
+    component: () => import('../views/CertificateSite.vue'),
+  },
+  // {
+  //   path: '/testing',
+  //   name: 'testing',
+  //   component: () => import('../views/_Sandbox.vue'),
+  // },
+  {
+    path: '/backhome',
+    beforeEnter() {
+      window.location.href = window.location.origin;
+    },
   },
   {
-    path: '/testing',
-    name: 'testing',
-    component: Tester,
+    path: '/unverified',
+    name: 'unverified',
+    component: () => import('@/views/Unverified.vue'),
   },
   {
-    path: '/connectWallet',
-    name: 'connect',
-    component: Home,
-  },
-  {
-    path: '/about',
+    path: '/sharing/:address/:certificate',
     name: 'About',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue'),
+    component: () => import(/* webpackChunkName: "about" */ '../views/SharingSite.vue'),
+    beforeEnter: async (to, from, next) => {
+      // ...
+      const { address } = to.params;
+      const { certificate } = to.params;
+      const hasCertificateResult = await hasCertificate(certificate, address);
+      if (hasCertificateResult) {
+        next();
+        // console.log('verified');
+      }
+      next('/unverified');
+    },
   },
 ];
 
