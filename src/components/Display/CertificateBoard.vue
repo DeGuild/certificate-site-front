@@ -208,6 +208,7 @@ export default defineComponent({
 
     function choosing(imageIdx) {
       const displayText = `Amazing! You have learned ${state.names[imageIdx]}`;
+      store.dispatch('User/setSelectedCertificateName', state.names[imageIdx]);
       store.dispatch('User/setChosenCertificate', [
         state.images[imageIdx],
         store.state.User.certificates[imageIdx][2],

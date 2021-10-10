@@ -8,6 +8,7 @@ export const UserModule = {
     certificateToFetch: null,
     certificatePage: 0,
     certificateSharing: '',
+    certificateSelectedName: '',
     fetching: false,
     dialog: 'Share your certificate and show your skill!',
     background: '../assets/cert_bg.png',
@@ -30,6 +31,9 @@ export const UserModule = {
     },
     SET_TO_FETCH_CERTIFICATE(state, cer) {
       state.certificateToFetch = cer;
+    },
+    SET_NAME_CERTIFICATE(state, name) {
+      state.certificateSelectedName = name;
     },
     SET_DIALOG(state, text) {
       state.dialog = text;
@@ -62,6 +66,9 @@ export const UserModule = {
     },
     setDialog({ commit }, text) {
       commit('SET_DIALOG', text);
+    },
+    setSelectedCertificateName({ commit }, name) {
+      commit('SET_NAME_CERTIFICATE', name);
     },
     reset({ commit }) {
       commit('SET_USER', null);
