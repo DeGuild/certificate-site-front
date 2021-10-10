@@ -66,7 +66,6 @@ export default defineComponent({
 }
 
 .btn {
-  /* Small button */
 
   display: flex;
   flex-direction: row;
@@ -79,7 +78,6 @@ export default defineComponent({
   left: 45.052vw;
   top: 43.458vw;
 
-  /* standart theme/error */
   background: #db2c00;
   border-radius: 4px;
 
@@ -92,10 +90,8 @@ export default defineComponent({
   letter-spacing: 0.00892857em;
   text-transform: uppercase;
 
-  /* shades/white */
   color: #ffffff;
 
-  /* Inside Auto Layout */
   flex: none;
   order: 0;
   flex-grow: 0;

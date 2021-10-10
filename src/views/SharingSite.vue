@@ -1,11 +1,9 @@
 <template>
   <Dialog />
   <sharing-frame></sharing-frame>
-
 </template>
 
 <script>
-import { useStore } from 'vuex';
 import { computed, reactive } from 'vue';
 import { useHead } from '@vueuse/head';
 import Dialog from '../components/General/Wow.vue';
@@ -19,8 +17,6 @@ export default {
     SharingFrame,
   },
   setup() {
-    const store = useStore();
-    const user = computed(() => store.state.User.user);
     const siteData = reactive({
       title: 'Certificate Showcase',
       description: 'Best site to share your hard-earned certificates from Dapp!',
@@ -35,9 +31,6 @@ export default {
         },
       ],
     });
-    // console.log(store.state.User.user);
-    // console.log(user);
-    return { user };
   },
 };
 </script>

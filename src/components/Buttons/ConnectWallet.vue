@@ -35,9 +35,7 @@ export default {
 
     async function fetchAllCertificates(nextToFetch) {
       let response = null;
-      // console.log(nextToFetch);
       if (nextToFetch) {
-        // console.log(`https://us-central1-deguild-2021.cloudfunctions.net/app/allCertificates/${nextToFetch}/next`);
         response = await fetch(
           `https://us-central1-deguild-2021.cloudfunctions.net/app/allCertificates/${nextToFetch}/next`,
           { mode: 'cors' },
@@ -49,9 +47,7 @@ export default {
         );
       }
 
-      // waits until the request completes...
       state.certificateSet = await response.json();
-      // console.log(state.certificateSet.result[state.certificateSet.result.length - 1]);
       const next = state.certificateSet.result[state.certificateSet.result.length - 1];
       store.dispatch('User/setCertificateToFetch', next);
       return state.certificateSet;
@@ -65,21 +61,16 @@ export default {
 
     async function hasCertificate(address) {
       const certificateManager = new web3.eth.Contract(abi, address);
-      // console.log(store.state.User.user, address);
-
       const caller = await certificateManager.methods
         .verify(store.state.User.user)
         .call();
       return caller;
     }
 
-    // console.log(certificateManager.methods);
-
     async function verifyNetwork() {
       state.network = await web3.eth.net.getNetworkType();
 
       if (state.network !== 'rinkeby') {
-        // console.log('Please change to rinkeby testnet');
         state.primary = 'CHANGE TO RINKEBY';
         return false;
       }
@@ -123,10 +114,6 @@ export default {
         certificateArray.push(address);
       }
       return certificateArray;
-      // await store.dispatch(
-      //   'User/setCertificateToFetch',
-      //   address,
-      // );
     }
 
     async function connectWallet() {
@@ -135,7 +122,6 @@ export default {
       if (window.ethereum) {
         try {
           const accounts = await window.ethereum.send('eth_requestAccounts');
-          // console.log(accounts.result[0]);
           const accountLength = accounts.result[0].length;
           const connectedAddress = `${accounts.result[0].substring(
             0,
@@ -152,8 +138,6 @@ export default {
           store.dispatch('User/setFetching', true);
 
           while (next > 0) {
-            // console.log("Let's fetch them with web3");
-
             const cersVerified = await Promise.all(
               state.certificateSet.result.map(userCertificateChecker),
             );
@@ -162,20 +146,17 @@ export default {
             toAdd.forEach((element) => {
               if (element.length > 0) userCertificates.push(element);
             });
-            // store.dispatch('User/setCertificates', toAdd);
             console.log(toAdd);
 
             store.dispatch('User/setCertificates', userCertificates);
             next = await fetchAllCertificates(
               store.state.User.certificateToFetch,
             );
-            // console.log(state.certificateSet.result);
           }
           store.dispatch('User/setFetching', false);
 
           return true;
         } catch (error) {
-          // console.error(error);
           state.primary = 'CONNECT WALLET';
         }
       }
@@ -189,15 +170,11 @@ export default {
 
     // For now, 'eth_accounts' will continue to always return an array
     function handleAccountsChanged(accounts) {
-      // console.log(accounts[0]);
-      // console.log(store.state.User.user);
       const current = accounts[0];
       if (accounts.length === 0) {
-        // MetaMask is locked or the user has not connected any accounts
         disconnected();
       } else if (current !== store.state.User.user) {
         connectWallet();
-        // Do any other work!
       }
     }
 
@@ -219,8 +196,6 @@ export default {
         return false;
       }
       await connectWallet();
-      // console.log(data);
-      // console.log('we', caller);
       return true;
     }
 

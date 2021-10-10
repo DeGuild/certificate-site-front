@@ -11,7 +11,6 @@ const web3 = new Web3(Web3.givenProvider || 'ws://localhost:8545');
 async function hasCertificate(address, user) {
   try {
     const certificateManager = new web3.eth.Contract(abi, address);
-    // console.log(store.state.User.user);
 
     const caller = await certificateManager.methods.verify(user).call();
     return caller;
@@ -26,11 +25,6 @@ const routes = [
     name: 'Home',
     component: () => import('../views/CertificateSite.vue'),
   },
-  // {
-  //   path: '/testing',
-  //   name: 'testing',
-  //   component: () => import('../views/_Sandbox.vue'),
-  // },
   {
     path: '/backhome',
     beforeEnter() {
@@ -48,7 +42,7 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/SharingSite.vue'),
+    component: () => import('../views/SharingSite.vue'),
     beforeEnter: async (to, from, next) => {
       // ...
       const { address } = to.params;
@@ -56,7 +50,6 @@ const routes = [
       const hasCertificateResult = await hasCertificate(certificate, address);
       if (hasCertificateResult) {
         next();
-        // console.log('verified');
       }
       next('/unverified');
     },

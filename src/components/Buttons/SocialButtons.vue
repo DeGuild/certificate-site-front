@@ -7,7 +7,6 @@
     >
       <div class="facebook"></div>
     </ShareNetwork>
-    <!-- {{state.sharingUrl}} -->
     <ShareNetwork
       network="twitter"
       :url="state.sharingUrl"

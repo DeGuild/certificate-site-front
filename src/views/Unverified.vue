@@ -26,7 +26,6 @@ export default {
       description: 'This certificate is not verified for this owner.',
     });
     useHead({
-      // Can be static or computed
       title: computed(() => siteData.title),
       meta: [
         {

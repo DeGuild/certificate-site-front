@@ -53,7 +53,6 @@ import { useStore } from 'vuex';
 export default defineComponent({
   name: 'CertificateBoard',
   setup() {
-    // const balances = 0;
     const store = useStore();
 
     function urlExtractor(proxy) {
@@ -83,7 +82,6 @@ export default defineComponent({
         ? urlExtractor(store.state.User.certificates)
         : store.state.User.certificates;
       const startIdx = 0 + store.state.User.certificatePage * 8;
-      // console.log(certs);
       if (certs) {
         const amount = startIdx + 8 < certs.length ? startIdx + 8 : certs.length;
         for (let index = startIdx; index < amount; index += 1) {
@@ -99,7 +97,6 @@ export default defineComponent({
         ? nameExtractor(store.state.User.certificates)
         : store.state.User.certificates;
       const startIdx = 0 + store.state.User.certificatePage * 8;
-      // console.log(certs);
       if (certs) {
         const amount = startIdx + 8 < certs.length ? startIdx + 8 : certs.length;
         for (let index = startIdx; index < amount; index += 1) {
@@ -115,7 +112,6 @@ export default defineComponent({
         ? addressExtractor(store.state.User.certificates)
         : store.state.User.certificates;
       const startIdx = 0 + store.state.User.certificatePage * 8;
-      // console.log(certs);
       if (certs) {
         const amount = startIdx + 8 < certs.length ? startIdx + 8 : certs.length;
         for (let index = startIdx; index < amount; index += 1) {
@@ -221,11 +217,9 @@ export default defineComponent({
     }
 
     async function navigate(pageIdx) {
-      // fake loading
       store.images = [];
 
       store.dispatch('User/setCertificatePage', pageIdx);
-      // console.log(store.state.User.certificatePage);
       return true;
     }
     return {

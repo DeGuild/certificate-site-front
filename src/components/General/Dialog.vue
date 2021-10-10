@@ -17,12 +17,10 @@ import { defineComponent, reactive, computed } from 'vue';
 export default defineComponent({
   name: 'Dialog',
   setup() {
-    // const balances = 0;
     const store = useStore();
     const state = reactive({
       dialog: computed(() => store.state.User.dialog),
       dialogStyle: computed(() => (store.state.User.dialog.length > 45)),
-      // dialogStyle: { 'font-size': '1vw' },
     });
 
     return {

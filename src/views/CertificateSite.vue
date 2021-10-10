@@ -38,7 +38,6 @@ export default {
       description: 'Best site to share your hard-earned certificates from Dapp!',
     });
     useHead({
-      // Can be static or computed
       title: computed(() => siteData.title),
       meta: [
         {
@@ -48,8 +47,6 @@ export default {
       ],
     });
 
-    // console.log(store.state.User.user);
-    // console.log(user);
     return { user };
   },
 };
