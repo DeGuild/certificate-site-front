@@ -1,6 +1,36 @@
 <template>
   <no-certificate></no-certificate>
   <sad></sad>
+   <teleport to="head">
+    <link
+      rel="icon"
+      href="https://certificate-manager.web.app/certificate-icon.png"
+    />
+    <title>Unverified</title>
+
+    <!-- Facebook, Whatsapp -->
+    <meta property="og:site_name" content="Certificate Sharing Site" />
+    <meta property="og:title" content="Certificate Sharing Site by DeGuild" />
+    <meta
+      property="og:description"
+      content="Best site to share your hard-earned certificates from Dapp"
+    />
+    <meta property="og:image" content="certificate-icon.png" />
+    <meta property="og:url" content="https://certificate-manager.web.app/" />
+
+    <!-- Twitter -->
+    <meta name="twitter:title" content="Certificate Sharing Site" />
+    <meta
+      name="twitter:description"
+      content="Certificate Sharing Site by DeGuild"
+    />
+    <meta name="twitter:image" content="certificate-icon.png" />
+    <meta
+      property="twitter:url"
+      content="https://certificate-manager.web.app/"
+    />
+    <meta name="twitter:card" content="summary" />
+  </teleport>
 </template>
 
 <script>

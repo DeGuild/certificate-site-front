@@ -214,7 +214,7 @@ export default defineComponent({
       ]);
       store.dispatch(
         'User/setSharingCertificate',
-        `https://certificate-manager.web.app/sharing/${store.state.User.user}/${state.addresses[imageIdx]}`,
+        `${window.location.origin}/sharing/${store.state.User.user}/${state.addresses[imageIdx]}`,
       );
       store.dispatch('User/setDialog', displayText);
     }
