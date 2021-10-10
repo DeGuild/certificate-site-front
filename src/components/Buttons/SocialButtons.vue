@@ -1,11 +1,12 @@
 <template>
   <div v-if="$store.state.User.certificateSelected">
-    <ShareNetwork network="facebook" :url="sharingUrl" hashtags="DeGuild,Skill">
+    <ShareNetwork network="facebook" :url="state.sharingUrl" hashtags="DeGuild,Skill">
       <div class="facebook"></div>
     </ShareNetwork>
+    <!-- {{state.sharingUrl}} -->
     <ShareNetwork
       network="twitter"
-      :url="sharingUrl"
+      :url="state.sharingUrl"
       title="Best site to share your hard-earned certificates from Dapp"
       twitter-user="DeGuild"
       hashtags="DeGuild,Skill"
@@ -28,11 +29,7 @@ export default {
       btn1style: {},
       network: '',
       sharingUrl: computed(
-        () => `${window.location.origin}/${store.state.User.user}/${
-          store.state.User.certificateSelected
-            ? store.state.User.certificateSelected[1]
-            : null
-        }`,
+        () => store.state.User.certificateSharing,
       ),
     });
 
