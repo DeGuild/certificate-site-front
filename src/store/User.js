@@ -8,12 +8,16 @@ export const UserModule = {
     certificateToFetch: null,
     certificatePage: 0,
     certificateSharing: '',
+    fetching: false,
     dialog: 'Share your certificate and show your skill!',
     background: '../assets/cert_bg.png',
   },
   mutations: {
     SET_USER(state, user) {
       state.user = user;
+    },
+    SET_FETCHING(state, fetch) {
+      state.fetching = fetch;
     },
     SET_CERTIFICATES(state, cer) {
       state.certificates = cer;
@@ -37,6 +41,9 @@ export const UserModule = {
   actions: {
     setUser({ commit }, user) {
       commit('SET_USER', user);
+    },
+    setFetching({ commit }, fetch) {
+      commit('SET_FETCHING', fetch);
     },
     setCertificates({ commit }, certs) {
       commit('SET_CERTIFICATES', certs);

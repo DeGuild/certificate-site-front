@@ -65,7 +65,7 @@ export default {
 
     async function hasCertificate(address) {
       const certificateManager = new web3.eth.Contract(abi, address);
-      // console.log(store.state.User.user);
+      // console.log(store.state.User.user, address);
 
       const caller = await certificateManager.methods
         .verify(store.state.User.user)
@@ -109,6 +109,7 @@ export default {
     async function userCertificateChecker(address) {
       const hasCertificateResult = await hasCertificate(address);
       const certificateArray = [];
+      console.log(hasCertificateResult);
       if (hasCertificateResult) {
         const name = await getName(address);
         const imageUrl = await fetch(
@@ -147,6 +148,8 @@ export default {
           store.dispatch('User/setUser', accounts.result[0]);
           let next = state.certificateSet.result.length;
           let toAdd = [];
+          const userCertificates = [];
+          store.dispatch('User/setFetching', true);
 
           while (next > 0) {
             // console.log("Let's fetch them with web3");
@@ -154,16 +157,21 @@ export default {
             const cersVerified = await Promise.all(
               state.certificateSet.result.map(userCertificateChecker),
             );
-            // console.log(cersVerified);
 
             toAdd = toAdd.concat(cersVerified);
+            toAdd.forEach((element) => {
+              if (element.length > 0) userCertificates.push(element);
+            });
             // store.dispatch('User/setCertificates', toAdd);
-            store.dispatch('User/setCertificates', toAdd);
+            console.log(toAdd);
+
+            store.dispatch('User/setCertificates', userCertificates);
             next = await fetchAllCertificates(
               store.state.User.certificateToFetch,
             );
             // console.log(state.certificateSet.result);
           }
+          store.dispatch('User/setFetching', false);
 
           return true;
         } catch (error) {

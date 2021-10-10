@@ -8,6 +8,10 @@
       class="background frame"
       :style="state.stylesFrame[imageIndex - 1]"
     ></div>
+    <div class="half-circle-spinner" :style="state.styles[imageIndex - 1]" v-if="state.loading">
+      <div class="half-circle-spinner circle circle-1"></div>
+      <div class="half-circle-spinner circle circle-2"></div>
+    </div>
     <div v-if="state.images">
       <div v-if="state.images[imageIndex - 1]">
         <div class="image" :style="state.styles[imageIndex - 1]">
@@ -33,7 +37,7 @@
   <button
     class="navButton"
     v-on:click="navigate(state.pageIdx + 1)"
-    v-if="state.pageIdx < state.images.length / 8 - 1"
+    v-if="state.pageIdx < state.allCerts.length / 8 - 1"
   >
     &#62;
   </button>
@@ -128,6 +132,9 @@ export default defineComponent({
       images: computed(computeImages),
       names: computed(computeNames),
       addresses: computed(computeAddresses),
+      loading: computed(() => store.state.User.fetching),
+      // eslint-disable-next-line max-len
+      allCerts: computed(() => (store.state.User.certificates ? store.state.User.certificates : [])),
       pageIdx: computed(() => store.state.User.certificatePage),
       styles: [
         {
@@ -213,7 +220,8 @@ export default defineComponent({
     }
 
     async function navigate(pageIdx) {
-      // await fetchAllCertificates();
+      // fake loading
+      store.images = [];
 
       store.dispatch('User/setCertificatePage', pageIdx);
       // console.log(store.state.User.certificatePage);
@@ -308,6 +316,43 @@ export default defineComponent({
 
   &:hover {
     background: $danger-hover;
+  }
+}
+.half-circle-spinner {
+  box-sizing: border-box;
+  width: 5vw;
+  height: 5vw;
+  top: 1.1vw;
+  left: 1.1vw;
+  border-radius: 100%;
+  position: absolute;
+
+  &.circle {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 100%;
+    border: calc(60px / 10) solid transparent;
+  }
+
+  &.circle.circle-1 {
+    border-top-color: #ff1d5e;
+    animation: half-circle-spinner-animation 1s infinite;
+  }
+
+  &.circle.circle-2 {
+    border-bottom-color: #ff1d5e;
+    animation: half-circle-spinner-animation 1s infinite alternate;
+  }
+
+  @keyframes half-circle-spinner-animation {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
   }
 }
 </style>
