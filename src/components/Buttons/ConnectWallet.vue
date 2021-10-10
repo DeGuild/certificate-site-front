@@ -15,6 +15,9 @@ import { reactive, onBeforeMount, computed } from 'vue';
 
 const Web3 = require('web3');
 
+/**
+ * Using relative path, just clone the git beside this project directory and compile to run
+ */
 const {
   abi,
 } = require('../../../../DeGuild-MG-CS-Token-contracts/artifacts/contracts/SkillCertificates/ISkillCertificate.sol/ISkillCertificate.json');
@@ -33,6 +36,12 @@ export default {
     });
     const web3 = new Web3(Web3.givenProvider || 'ws://localhost:8545');
 
+    /**
+     * Returns all certificates in the DeGuild system.
+     *
+     * @param {address} nextToFetch The address we lastly fetched
+     * @return {address[]} all certificates in the DeGuild system.
+     */
     async function fetchAllCertificates(nextToFetch) {
       let response = null;
       if (nextToFetch) {
@@ -53,6 +62,12 @@ export default {
       return state.certificateSet;
     }
 
+    /**
+     * Returns name of the address.
+     *
+     * @param {address} address The address of any contract using the interface given
+     * @return {string} name of the contract.
+     */
     async function getName(address) {
       const certificateManager = new web3.eth.Contract(abi, address);
       const caller = await certificateManager.methods.name().call();

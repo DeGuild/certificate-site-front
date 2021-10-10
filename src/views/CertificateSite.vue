@@ -6,7 +6,6 @@
     <certificate-board />
   </div>
   <no-wallet v-if="user === null" />
-  <footer></footer>
 
 </template>
 
