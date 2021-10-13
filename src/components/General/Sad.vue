@@ -17,11 +17,10 @@ import {
 } from 'vue';
 
 export default defineComponent({
-  name: 'Dialog',
+  name: 'Sad',
   setup() {
     const store = useStore();
     const state = reactive({
-      name: null,
       dialog: computed(() => store.state.User.dialog),
       dialogStyle: computed(() => store.state.User.dialog.length > 45),
     });

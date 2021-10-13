@@ -50,22 +50,3 @@ export default {
   },
 };
 </script>
-
-<style>
-body {
-  background-image: url('../assets/cert_bg.png');
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  background-color: #464646;
-}
-footer {
-  /* background-color: #202020; */
-  opacity: 0%;
-  color: white;
-  position: absolute;
-  width: 100%;
-  height: 10%;
-  bottom: -5vw;
-}
-</style>

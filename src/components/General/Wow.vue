@@ -24,7 +24,7 @@ const {
 } = require('../../../../DeGuild-MG-CS-Token-contracts/artifacts/contracts/SkillCertificates/ISkillCertificate.sol/ISkillCertificate.json');
 
 export default defineComponent({
-  name: 'Dialog',
+  name: 'Wow',
   setup() {
     const store = useStore();
     const route = useRoute();

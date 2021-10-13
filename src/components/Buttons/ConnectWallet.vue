@@ -78,10 +78,10 @@ export default {
     }
 
     /**
-     * Returns name of the address.
+     * Returns verification of the certificate
      *
      * @param {address} address The address of any contract using the interface given
-     * @return {string} name of the contract.
+     * @return {bool} status of verification.
      */
     async function hasCertificate(address) {
       const certificateManager = new web3.eth.Contract(abi, address);
@@ -91,6 +91,12 @@ export default {
       return caller;
     }
 
+    /**
+     * Returns verification of the Rinkeby Network
+     *
+     * @param {address} address The address of any contract using the interface given
+     * @return {bool} status of verification.
+     */
     async function verifyNetwork() {
       state.network = await web3.eth.net.getNetworkType();
 
@@ -100,31 +106,35 @@ export default {
       }
       return true;
     }
+
+    /**
+     * Connect to the Rinkeby Network
+     */
     async function connectToRinkeby() {
-      try {
-        //  Rinkeby chain id
-        await window.ethereum.request({
-          method: 'wallet_switchEthereumChain',
-          params: [{ chainId: '0x4' }],
-        });
-      } catch (switchError) {
-        // This error code indicates that the chain has not been added to MetaMask.
-        if (switchError.code === 4902) {
-          console.error(switchError);
-        }
-        // handle other "switch" errors
-      }
+      await window.ethereum.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: '0x4' }],
+      });
     }
 
+    /**
+     * Disconnect user from the dapp
+     */
     function disconnected() {
       state.primary = 'CONNECT WALLET';
       store.dispatch('User/setUser', null);
     }
 
+    /**
+     * Returns the information of the certificate of this user
+     *
+     * @param {address} address The address of any contract using the interface given
+     * @return {certificate[]} array of the certificates.
+     */
     async function userCertificateChecker(address) {
       const hasCertificateResult = await hasCertificate(address);
       const certificateArray = [];
-      console.log(hasCertificateResult);
+
       if (hasCertificateResult) {
         const name = await getName(address);
         const imageUrl = await fetch(
@@ -140,6 +150,10 @@ export default {
       return certificateArray;
     }
 
+    /**
+     * Connect user to the dapp
+     * @return {bool} status of connection.
+     */
     async function connectWallet() {
       store.dispatch('User/reset');
 
@@ -188,12 +202,20 @@ export default {
       return false;
     }
 
+    /**
+     * Handle what we do when the user changed the network
+     */
     function handleChainChanged() {
       // We recommend reloading the page, unless you must do otherwise
       window.location.reload();
     }
 
-    // For now, 'eth_accounts' will continue to always return an array
+    /**
+     * Returns the information of the certificate of this user
+     * @dev For now, 'eth_accounts' will continue to always return an array
+     *
+     * @param {address} address The addresses of connect wallets
+     */
     function handleAccountsChanged(accounts) {
       const current = accounts[0];
       if (accounts.length === 0) {
@@ -201,6 +223,19 @@ export default {
       } else if (current !== store.state.User.user) {
         connectWallet();
       }
+    }
+
+    /**
+     * Connect to the Ethereum network
+     */
+    async function ethEnabled() {
+      state.primary = "<i class='fas fa-spinner fa-spin'></i>";
+      if (state.network !== 'rinkeby') {
+        await connectToRinkeby();
+        return false;
+      }
+      await connectWallet();
+      return true;
     }
 
     onBeforeMount(async () => {
@@ -213,16 +248,6 @@ export default {
       window.ethereum.on('accountsChanged', handleAccountsChanged);
       window.ethereum.on('chainChanged', handleChainChanged);
     });
-
-    async function ethEnabled() {
-      state.primary = "<i class='fas fa-spinner fa-spin'></i>";
-      if (state.network !== 'rinkeby') {
-        await connectToRinkeby();
-        return false;
-      }
-      await connectWallet();
-      return true;
-    }
 
     return {
       state,

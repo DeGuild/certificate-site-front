@@ -17,7 +17,7 @@ import {
 } from 'vue';
 
 export default defineComponent({
-  name: 'Dialog',
+  name: 'Missing',
   setup() {
     const store = useStore();
     const state = reactive({

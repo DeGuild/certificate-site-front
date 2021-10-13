@@ -25,6 +25,12 @@ export default defineComponent({
   setup() {
     const route = useRoute();
 
+    /**
+     * Returns the url of the certificate address
+     *
+     * @param {address} address The certificate's address
+     * @return {string} certificate's url.
+     */
     async function getImageUrl(address) {
       const imageUrl = await fetch(
         `https://us-central1-deguild-2021.cloudfunctions.net/app/readCertificate/${address}`,
@@ -34,10 +40,12 @@ export default defineComponent({
       const dataUrl = await imageUrl.json();
       return dataUrl.imageUrl;
     }
+
     const state = reactive({
       imageSelected:
         '',
     });
+
     onBeforeMount(async () => {
       state.imageSelected = await getImageUrl(route.params.certificate);
     });
