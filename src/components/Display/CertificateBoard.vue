@@ -18,7 +18,7 @@
           <img
             class="image display click"
             :style="state.styles[imageIndex - 1]"
-            :src="state.images[imageIndex - 1]"
+            v-bind:src="state.images[imageIndex - 1]"
             v-if="state.images[imageIndex - 1]"
             v-on:click="choosing(imageIndex - 1)"
           />
@@ -236,7 +236,6 @@ export default defineComponent({
   width: 7.5vw;
   height: 7.5vw;
   position: absolute;
-  background: #c4c4c4;
 
   &.display {
     position: static;
@@ -245,7 +244,7 @@ export default defineComponent({
   &.click {
     cursor: pointer;
     &:hover {
-      opacity: 0.89;
+      opacity: 0.9;
     }
   }
 

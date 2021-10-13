@@ -74,6 +74,12 @@ export default {
       return caller;
     }
 
+    /**
+     * Returns name of the address.
+     *
+     * @param {address} address The address of any contract using the interface given
+     * @return {string} name of the contract.
+     */
     async function hasCertificate(address) {
       const certificateManager = new web3.eth.Contract(abi, address);
       const caller = await certificateManager.methods

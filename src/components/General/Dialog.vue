@@ -50,7 +50,7 @@ export default defineComponent({
   font-family: Secular One;
   font-style: normal;
   font-weight: normal;
-  font-size: 2.5vw;
+  font-size: 2.25vw;
   line-height: 3vw;
   color: #ffffff;
   background: '';
@@ -58,7 +58,7 @@ export default defineComponent({
   overflow: hidden;
   text-overflow: ellipsis;
   &.smaller {
-    font-size: 1.55vw;
+    font-size: 1.4vw;
   }
 }
 .npc {
