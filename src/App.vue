@@ -17,7 +17,7 @@
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   //this is where we use the variable
-  color: $primary;
+  color: #ffffff;
   margin-top: 60px;
 }
 body {
@@ -29,7 +29,6 @@ body {
 }
 
 footer {
-  /* background-color: #202020; */
   opacity: 0%;
   color: white;
   position: absolute;
