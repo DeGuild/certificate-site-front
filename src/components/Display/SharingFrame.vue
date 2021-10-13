@@ -23,8 +23,6 @@ import { useRoute } from 'vue-router';
 export default defineComponent({
   name: 'SharingFrame',
   setup() {
-    // const balances = 0;
-    // const store = useStore();
     const route = useRoute();
 
     async function getImageUrl(address) {
@@ -34,7 +32,6 @@ export default defineComponent({
       );
 
       const dataUrl = await imageUrl.json();
-      // console.log(dataUrl);
       return dataUrl.imageUrl;
     }
     const state = reactive({

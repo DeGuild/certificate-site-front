@@ -87,7 +87,7 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  if (!Web3.givenProvider) next({ name: 'Login' });
+  if (!Web3.givenProvider) next({ name: 'noProvider' });
   // if the user is not authenticated, `next` is called twice
   next();
 });
