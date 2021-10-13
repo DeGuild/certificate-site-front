@@ -1,16 +1,16 @@
 <template>
-  <div v-if="state.imageSelected">
+  <div v-if="$store.state.User.certificateSelected">
     <ShareNetwork
       network="facebook"
-      url="https://certificate-manager.web.app/"
+      :url="state.sharingUrl"
       hashtags="DeGuild,Skill"
     >
       <div class="facebook"></div>
     </ShareNetwork>
     <ShareNetwork
       network="twitter"
-      url="https://certificate-manager.web.app/"
-      title="Best site to share your hard-earned certificates from Dapp"
+      :url="state.sharingUrl"
+      :title="state.title"
       twitter-user="DeGuild"
       hashtags="DeGuild,Skill"
     >
@@ -31,7 +31,10 @@ export default {
       primary: 'SOMETHING WENT WRONG',
       btn1style: {},
       network: '',
-      imageSelected: computed(() => store.state.User.certificateSelected),
+      sharingUrl: computed(() => store.state.User.certificateSharing),
+      title: computed(
+        () => `Check out my ${store.state.User.certificateSelectedName} certificate! Do you want to earn one for yourself? Visit a magic shop and buy some scrolls!`,
+      ),
     });
 
     return {

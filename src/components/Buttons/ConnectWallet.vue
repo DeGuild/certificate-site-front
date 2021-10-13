@@ -1,6 +1,9 @@
 <template>
-  <div id="app">
+  <div v-if="!user">
     <button class="btn" @click="ethEnabled" v-html="state.primary"></button>
+  </div>
+  <div v-if="user">
+    <div class="btn connected" v-html="state.primary"></div>
   </div>
 </template>
 
@@ -8,10 +11,15 @@
 /* eslint-disable no-await-in-loop */
 
 import { useStore } from 'vuex';
-import { reactive, onBeforeMount } from 'vue';
+import { useRoute } from 'vue-router';
+
+import { reactive, onBeforeMount, computed } from 'vue';
 
 const Web3 = require('web3');
 
+/**
+ * Using relative path, just clone the git beside this project directory and compile to run
+ */
 const {
   abi,
 } = require('../../../../DeGuild-MG-CS-Token-contracts/artifacts/contracts/SkillCertificates/ISkillCertificate.sol/ISkillCertificate.json');
@@ -20,19 +28,26 @@ export default {
   name: 'ConnectWallet',
   setup() {
     const store = useStore();
+    const route = useRoute();
+
+    const user = computed(() => store.state.User.user);
+
     const state = reactive({
       primary: 'SOMETHING WENT WRONG',
-      btn1style: {},
       network: '',
       certificateSet: null,
     });
     const web3 = new Web3(Web3.givenProvider || 'ws://localhost:8545');
 
+    /**
+     * Returns all certificates in the DeGuild system.
+     *
+     * @param {address} nextToFetch The address we lastly fetched
+     * @return {address[]} all certificates in the DeGuild system.
+     */
     async function fetchAllCertificates(nextToFetch) {
       let response = null;
-      // console.log(nextToFetch);
       if (nextToFetch) {
-        // console.log(`https://us-central1-deguild-2021.cloudfunctions.net/app/allCertificates/${nextToFetch}/next`);
         response = await fetch(
           `https://us-central1-deguild-2021.cloudfunctions.net/app/allCertificates/${nextToFetch}/next`,
           { mode: 'cors' },
@@ -44,66 +59,82 @@ export default {
         );
       }
 
-      // waits until the request completes...
       state.certificateSet = await response.json();
-      // console.log(state.certificateSet.result[state.certificateSet.result.length - 1]);
       const next = state.certificateSet.result[state.certificateSet.result.length - 1];
       store.dispatch('User/setCertificateToFetch', next);
       return state.certificateSet;
     }
 
+    /**
+     * Returns name of the address.
+     *
+     * @param {address} address The address of any contract using the interface given
+     * @return {string} name of the contract.
+     */
     async function getName(address) {
       const certificateManager = new web3.eth.Contract(abi, address);
       const caller = await certificateManager.methods.name().call();
       return caller;
     }
 
+    /**
+     * Returns verification of the certificate
+     *
+     * @param {address} address The address of any contract using the interface given
+     * @return {bool} status of verification.
+     */
     async function hasCertificate(address) {
       const certificateManager = new web3.eth.Contract(abi, address);
-      // console.log(store.state.User.user);
-
       const caller = await certificateManager.methods
         .verify(store.state.User.user)
         .call();
       return caller;
     }
 
-    // console.log(certificateManager.methods);
-
+    /**
+     * Returns verification of the Rinkeby Network
+     *
+     * @param {address} address The address of any contract using the interface given
+     * @return {bool} status of verification.
+     */
     async function verifyNetwork() {
       state.network = await web3.eth.net.getNetworkType();
 
       if (state.network !== 'rinkeby') {
-        // console.log('Please change to rinkeby testnet');
         state.primary = 'CHANGE TO RINKEBY';
         return false;
       }
       return true;
     }
+
+    /**
+     * Connect to the Rinkeby Network
+     */
     async function connectToRinkeby() {
-      try {
-        //  Rinkeby chain id
-        await window.ethereum.request({
-          method: 'wallet_switchEthereumChain',
-          params: [{ chainId: '0x4' }],
-        });
-      } catch (switchError) {
-        // This error code indicates that the chain has not been added to MetaMask.
-        if (switchError.code === 4902) {
-          console.error(switchError);
-        }
-        // handle other "switch" errors
-      }
+      await window.ethereum.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: '0x4' }],
+      });
     }
 
+    /**
+     * Disconnect user from the dapp
+     */
     function disconnected() {
       state.primary = 'CONNECT WALLET';
       store.dispatch('User/setUser', null);
     }
 
+    /**
+     * Returns the information of the certificate of this user
+     *
+     * @param {address} address The address of any contract using the interface given
+     * @return {certificate[]} array of the certificates.
+     */
     async function userCertificateChecker(address) {
       const hasCertificateResult = await hasCertificate(address);
       const certificateArray = [];
+
       if (hasCertificateResult) {
         const name = await getName(address);
         const imageUrl = await fetch(
@@ -117,19 +148,18 @@ export default {
         certificateArray.push(address);
       }
       return certificateArray;
-      // await store.dispatch(
-      //   'User/setCertificateToFetch',
-      //   address,
-      // );
     }
 
+    /**
+     * Connect user to the dapp
+     * @return {bool} status of connection.
+     */
     async function connectWallet() {
       store.dispatch('User/reset');
 
       if (window.ethereum) {
         try {
           const accounts = await window.ethereum.send('eth_requestAccounts');
-          // console.log(accounts.result[0]);
           const accountLength = accounts.result[0].length;
           const connectedAddress = `${accounts.result[0].substring(
             0,
@@ -142,48 +172,70 @@ export default {
           store.dispatch('User/setUser', accounts.result[0]);
           let next = state.certificateSet.result.length;
           let toAdd = [];
+          const userCertificates = [];
+          store.dispatch('User/setFetching', true);
 
           while (next > 0) {
-            // console.log("Let's fetch them with web3");
-
             const cersVerified = await Promise.all(
               state.certificateSet.result.map(userCertificateChecker),
             );
-            // console.log(cersVerified);
 
             toAdd = toAdd.concat(cersVerified);
-            // store.dispatch('User/setCertificates', toAdd);
-            store.dispatch('User/setCertificates', toAdd);
-            next = await fetchAllCertificates(store.state.User.certificateToFetch);
-            // console.log(state.certificateSet.result);
+            toAdd.forEach((element) => {
+              if (element.length > 0) userCertificates.push(element);
+            });
+            // console.log(toAdd);
+
+            store.dispatch('User/setCertificates', userCertificates);
+            next = await fetchAllCertificates(
+              store.state.User.certificateToFetch,
+            );
           }
+          store.dispatch('User/setFetching', false);
 
           return true;
         } catch (error) {
-          // console.error(error);
-          state.primary = 'CONNECT WALLET';
+          state.primary = 'ERROR!';
+          route.push('/no-provider');
         }
       }
       return false;
     }
 
+    /**
+     * Handle what we do when the user changed the network
+     */
     function handleChainChanged() {
       // We recommend reloading the page, unless you must do otherwise
       window.location.reload();
     }
 
-    // For now, 'eth_accounts' will continue to always return an array
+    /**
+     * Returns the information of the certificate of this user
+     * @dev For now, 'eth_accounts' will continue to always return an array
+     *
+     * @param {address} address The addresses of connect wallets
+     */
     function handleAccountsChanged(accounts) {
-      // console.log(accounts[0]);
-      // console.log(store.state.User.user);
       const current = accounts[0];
       if (accounts.length === 0) {
-        // MetaMask is locked or the user has not connected any accounts
         disconnected();
       } else if (current !== store.state.User.user) {
         connectWallet();
-        // Do any other work!
       }
+    }
+
+    /**
+     * Connect to the Ethereum network
+     */
+    async function ethEnabled() {
+      state.primary = "<i class='fas fa-spinner fa-spin'></i>";
+      if (state.network !== 'rinkeby') {
+        await connectToRinkeby();
+        return false;
+      }
+      await connectWallet();
+      return true;
     }
 
     onBeforeMount(async () => {
@@ -197,20 +249,9 @@ export default {
       window.ethereum.on('chainChanged', handleChainChanged);
     });
 
-    async function ethEnabled() {
-      state.primary = "<i class='fas fa-spinner fa-spin'></i>";
-      if (state.network !== 'rinkeby') {
-        await connectToRinkeby();
-        return false;
-      }
-      await connectWallet();
-      // console.log(data);
-      // console.log('we', caller);
-      return true;
-    }
-
     return {
       state,
+      user,
       ethEnabled,
     };
   },
@@ -253,10 +294,15 @@ export default {
   order: 0;
   flex-grow: 0;
   margin: 0px 0px;
-  cursor: pointer;
 
   &:hover {
     background: #cc3b3b;
+  }
+  &.connected {
+    &:hover {
+      background: #ff5252;
+    }
+    cursor: cursor;
   }
 }
 </style>

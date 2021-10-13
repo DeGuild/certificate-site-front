@@ -7,11 +7,18 @@ export const UserModule = {
     certificateSelected: null,
     certificateToFetch: null,
     certificatePage: 0,
+    certificateSharing: '',
+    certificateSelectedName: '',
+    fetching: false,
     dialog: 'Share your certificate and show your skill!',
+    background: '../assets/cert_bg.png',
   },
   mutations: {
     SET_USER(state, user) {
       state.user = user;
+    },
+    SET_FETCHING(state, fetch) {
+      state.fetching = fetch;
     },
     SET_CERTIFICATES(state, cer) {
       state.certificates = cer;
@@ -19,8 +26,14 @@ export const UserModule = {
     SET_CHOSEN_CERTIFICATE(state, cer) {
       state.certificateSelected = cer;
     },
+    SET_SHARING_CERTIFICATE(state, link) {
+      state.certificateSharing = link;
+    },
     SET_TO_FETCH_CERTIFICATE(state, cer) {
       state.certificateToFetch = cer;
+    },
+    SET_NAME_CERTIFICATE(state, name) {
+      state.certificateSelectedName = name;
     },
     SET_DIALOG(state, text) {
       state.dialog = text;
@@ -33,11 +46,17 @@ export const UserModule = {
     setUser({ commit }, user) {
       commit('SET_USER', user);
     },
+    setFetching({ commit }, fetch) {
+      commit('SET_FETCHING', fetch);
+    },
     setCertificates({ commit }, certs) {
       commit('SET_CERTIFICATES', certs);
     },
     setChosenCertificate({ commit }, cert) {
       commit('SET_CHOSEN_CERTIFICATE', cert);
+    },
+    setSharingCertificate({ commit }, link) {
+      commit('SET_SHARING_CERTIFICATE', link);
     },
     setCertificateToFetch({ commit }, cert) {
       commit('SET_TO_FETCH_CERTIFICATE', cert);
@@ -47,6 +66,9 @@ export const UserModule = {
     },
     setDialog({ commit }, text) {
       commit('SET_DIALOG', text);
+    },
+    setSelectedCertificateName({ commit }, name) {
+      commit('SET_NAME_CERTIFICATE', name);
     },
     reset({ commit }) {
       commit('SET_USER', null);
