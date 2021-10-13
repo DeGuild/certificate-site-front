@@ -11,6 +11,8 @@
 /* eslint-disable no-await-in-loop */
 
 import { useStore } from 'vuex';
+import { useRoute } from 'vue-router';
+
 import { reactive, onBeforeMount, computed } from 'vue';
 
 const Web3 = require('web3');
@@ -26,11 +28,12 @@ export default {
   name: 'ConnectWallet',
   setup() {
     const store = useStore();
+    const route = useRoute();
+
     const user = computed(() => store.state.User.user);
 
     const state = reactive({
       primary: 'SOMETHING WENT WRONG',
-      btn1style: {},
       network: '',
       certificateSet: null,
     });
@@ -167,7 +170,7 @@ export default {
             toAdd.forEach((element) => {
               if (element.length > 0) userCertificates.push(element);
             });
-            console.log(toAdd);
+            // console.log(toAdd);
 
             store.dispatch('User/setCertificates', userCertificates);
             next = await fetchAllCertificates(
@@ -178,7 +181,8 @@ export default {
 
           return true;
         } catch (error) {
-          state.primary = 'CONNECT WALLET';
+          state.primary = 'ERROR!';
+          route.push('/no-provider');
         }
       }
       return false;
