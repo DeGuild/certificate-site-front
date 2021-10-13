@@ -18,7 +18,7 @@ export default {
     Dialog,
     SharingFrame,
   },
-  async setup() {
+  setup() {
     const route = useRoute();
     async function getImageUrl(address) {
       const imageUrl = await fetch(
@@ -29,13 +29,11 @@ export default {
       const dataUrl = await imageUrl.json();
       return dataUrl.imageUrl;
     }
-    const image = await getImageUrl(route.params.certificate);
-
     const siteData = reactive({
       title: 'Certificate Showcase',
       description:
         'Best site to share your hard-earned certificates from Dapp!',
-      imageUrl: image,
+      imageUrl: getImageUrl(route.params.certificate),
     });
 
     useHead({
