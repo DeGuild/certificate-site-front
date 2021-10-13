@@ -55,27 +55,17 @@ const routes = [
     // which is lazy-loaded when the route is visited.
     component: () => import('../views/SharingSite.vue'),
     beforeEnter: async (to, from, next) => {
-      try {
-        //  Rinkeby chain id
-        await window.ethereum.request({
-          method: 'wallet_switchEthereumChain',
-          params: [{ chainId: '0x4' }],
-        });
-        const { address } = to.params;
-        const { certificate } = to.params;
-        const hasCertificateResult = await hasCertificate(certificate, address);
-        if (hasCertificateResult) {
-          next();
-        }
-      } catch (switchError) {
-        // This error code indicates that the chain has not been added to MetaMask.
-        if (switchError.code === 4902) {
-          console.error(switchError);
-        }
-        // handle other "switch" errors
+      //  Rinkeby chain id
+      await window.ethereum.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: '0x4' }],
+      });
+      const { address } = to.params;
+      const { certificate } = to.params;
+      const hasCertificateResult = await hasCertificate(certificate, address);
+      if (hasCertificateResult) {
+        next();
       }
-      // ...
-
       next('/unverified');
     },
   },

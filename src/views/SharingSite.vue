@@ -4,7 +4,7 @@
 </template>
 
 <script>
-import { computed, reactive, beforeCreate } from 'vue';
+import { computed, reactive } from 'vue';
 import { useHead } from '@vueuse/head';
 import { useRoute } from 'vue-router';
 
@@ -18,7 +18,7 @@ export default {
     Dialog,
     SharingFrame,
   },
-  setup() {
+  async setup() {
     const route = useRoute();
     async function getImageUrl(address) {
       const imageUrl = await fetch(
@@ -29,16 +29,15 @@ export default {
       const dataUrl = await imageUrl.json();
       return dataUrl.imageUrl;
     }
+    const image = await getImageUrl(route.params.certificate);
+
     const siteData = reactive({
       title: 'Certificate Showcase',
       description:
         'Best site to share your hard-earned certificates from Dapp!',
-      imageUrl: '',
+      imageUrl: image,
     });
 
-    beforeCreate(async () => {
-      siteData.imageUrl = await getImageUrl(route.params.certificate);
-    });
     useHead({
       // Can be static or computed
       title: computed(() => siteData.title),
