@@ -1,7 +1,4 @@
 <template>
-  <!-- <div v-for="slide in 9" :key="slide">
-    <img class="image" :src="state.images[slide]" :key="slide" />
-  </div> -->
   <div class="background"></div>
   <div v-for="imageIndex in 8" :key="imageIndex">
     <div
@@ -18,7 +15,7 @@
           <img
             class="image display click"
             :style="state.styles[imageIndex - 1]"
-            :src="state.images[imageIndex - 1]"
+            v-bind:src="state.images[imageIndex - 1]"
             v-if="state.images[imageIndex - 1]"
             v-on:click="choosing(imageIndex - 1)"
           />
@@ -53,9 +50,14 @@ import { useStore } from 'vuex';
 export default defineComponent({
   name: 'CertificateBoard',
   setup() {
-    // const balances = 0;
     const store = useStore();
 
+    /**
+     * Returns the urls of the certificates of this user
+     *
+     * @param {certificate[]} proxy The certificates of this user
+     * @return {string[]} array of the urls.
+     */
     function urlExtractor(proxy) {
       const urlArr = [];
       for (let index = 0; index < proxy.length; index += 1) {
@@ -63,6 +65,13 @@ export default defineComponent({
       }
       return urlArr;
     }
+
+    /**
+     * Returns the name of the certificates of this user
+     *
+     * @param {certificate[]} proxy The certificates of this user
+     * @return {string[]} array of the names.
+     */
     function nameExtractor(proxy) {
       const urlArr = [];
       for (let index = 0; index < proxy.length; index += 1) {
@@ -70,6 +79,13 @@ export default defineComponent({
       }
       return urlArr;
     }
+
+    /**
+     * Returns the address of the certificates of this user
+     *
+     * @param {certificate[]} proxy The certificates of this user
+     * @return {string[]} array of the addresses.
+     */
     function addressExtractor(proxy) {
       const urlArr = [];
       for (let index = 0; index < proxy.length; index += 1) {
@@ -77,13 +93,18 @@ export default defineComponent({
       }
       return urlArr;
     }
+
+    /**
+     * Returns the computed image urls to display
+     *
+     * @return {string[]} array of the image urls.
+     */
     function computeImages() {
       const page = [];
       const certs = store.state.User.certificates
         ? urlExtractor(store.state.User.certificates)
         : store.state.User.certificates;
       const startIdx = 0 + store.state.User.certificatePage * 8;
-      // console.log(certs);
       if (certs) {
         const amount = startIdx + 8 < certs.length ? startIdx + 8 : certs.length;
         for (let index = startIdx; index < amount; index += 1) {
@@ -93,13 +114,18 @@ export default defineComponent({
       }
       return page;
     }
+
+    /**
+     * Returns the computed image names to display
+     *
+     * @return {string[]} array of the image names.
+     */
     function computeNames() {
       const page = [];
       const certs = store.state.User.certificates
         ? nameExtractor(store.state.User.certificates)
         : store.state.User.certificates;
       const startIdx = 0 + store.state.User.certificatePage * 8;
-      // console.log(certs);
       if (certs) {
         const amount = startIdx + 8 < certs.length ? startIdx + 8 : certs.length;
         for (let index = startIdx; index < amount; index += 1) {
@@ -109,13 +135,18 @@ export default defineComponent({
       }
       return page;
     }
+
+    /**
+     * Returns the computed image addresses to display
+     *
+     * @return {string[]} array of the image addresses.
+     */
     function computeAddresses() {
       const page = [];
       const certs = store.state.User.certificates
         ? addressExtractor(store.state.User.certificates)
         : store.state.User.certificates;
       const startIdx = 0 + store.state.User.certificatePage * 8;
-      // console.log(certs);
       if (certs) {
         const amount = startIdx + 8 < certs.length ? startIdx + 8 : certs.length;
         for (let index = startIdx; index < amount; index += 1) {
@@ -125,6 +156,7 @@ export default defineComponent({
       }
       return page;
     }
+
     const state = reactive({
       imageSelected: computed(() => (store.state.User.certificateSelected
         ? store.state.User.certificateSelected[0]
@@ -206,8 +238,14 @@ export default defineComponent({
       ],
     });
 
+    /**
+     * Display the image chosen from the board
+     *
+     * @param {int} imageIdx The image index chosen
+     */
     function choosing(imageIdx) {
       const displayText = `Amazing! You have learned ${state.names[imageIdx]}`;
+      store.dispatch('User/setSelectedCertificateName', state.names[imageIdx]);
       store.dispatch('User/setChosenCertificate', [
         state.images[imageIdx],
         store.state.User.certificates[imageIdx][2],
@@ -219,14 +257,17 @@ export default defineComponent({
       store.dispatch('User/setDialog', displayText);
     }
 
-    async function navigate(pageIdx) {
-      // fake loading
+    /**
+     * Display the page chosen from the board
+     *
+     * @param {int} pageIdx The page index chosen
+     */
+    function navigate(pageIdx) {
       store.images = [];
-
       store.dispatch('User/setCertificatePage', pageIdx);
-      // console.log(store.state.User.certificatePage);
       return true;
     }
+
     return {
       state,
       navigate,
@@ -241,7 +282,6 @@ export default defineComponent({
   width: 7.5vw;
   height: 7.5vw;
   position: absolute;
-  background: #c4c4c4;
 
   &.display {
     position: static;
@@ -250,7 +290,7 @@ export default defineComponent({
   &.click {
     cursor: pointer;
     &:hover {
-      opacity: 0.89;
+      opacity: 0.9;
     }
   }
 
@@ -315,7 +355,7 @@ export default defineComponent({
   }
 
   &:hover {
-    background: $danger-hover;
+    background: #c82333;
   }
 }
 .half-circle-spinner {

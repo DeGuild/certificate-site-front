@@ -1,6 +1,6 @@
 <template>
-  <no-certificate></no-certificate>
-  <sad></sad>
+  <no-provider></no-provider>
+  <missing></missing>
 </template>
 
 <script>
@@ -8,22 +8,22 @@ import { useStore } from 'vuex';
 import { computed, reactive } from 'vue';
 import { useHead } from '@vueuse/head';
 
-import Sad from '../components/General/Sad.vue';
-import NoCertificate from '../components/Display/NoCertificate.vue';
+import NoProvider from '../components/Display/NoProvider.vue';
+import Missing from '../components/General/Missing.vue';
 // @ is an alias to /src
 
 export default {
   name: 'ConnectWalletSite',
   components: {
-    Sad,
-    NoCertificate,
+    Missing,
+    NoProvider,
   },
   setup() {
     const store = useStore();
     const user = computed(() => store.state.User.user);
     const siteData = reactive({
-      title: 'Unverified',
-      description: 'This certificate is not verified for this owner.',
+      title: 'No Provider',
+      description: 'You have not installed Metamask on your browser.',
     });
     useHead({
       title: computed(() => siteData.title),

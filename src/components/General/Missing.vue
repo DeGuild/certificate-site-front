@@ -1,48 +1,29 @@
 <template>
   <div class="dialog">
     <div class="dialog-text" v-bind:class="{ smaller: state.dialogStyle }">
-      {{ state.name }}
+      Sorry, please install Metamask.
     </div>
   </div>
-  <button class="btn" v-on:click="this.$router.push('/backhome')">
-    back to home
+  <button class="btn" v-on:click="this.$router.push('/metamask')">
+    VISIT SITE
   </button>
 </template>
 
 <script>
 import { useStore } from 'vuex';
-import { useRoute } from 'vue-router';
 
 import {
-  defineComponent, reactive, onBeforeMount, computed,
+  defineComponent, reactive, computed,
 } from 'vue';
 
-const Web3 = require('web3');
-
-const {
-  abi,
-} = require('../../../../DeGuild-MG-CS-Token-contracts/artifacts/contracts/SkillCertificates/ISkillCertificate.sol/ISkillCertificate.json');
-
 export default defineComponent({
-  name: 'Wow',
+  name: 'Missing',
   setup() {
     const store = useStore();
-    const route = useRoute();
-
-    const web3 = new Web3(Web3.givenProvider || 'ws://localhost:8545');
-
-    async function getName(address) {
-      const certificateManager = new web3.eth.Contract(abi, address);
-      const caller = await certificateManager.methods.name().call();
-      return caller;
-    }
     const state = reactive({
       name: null,
       dialog: computed(() => store.state.User.dialog),
       dialogStyle: computed(() => store.state.User.dialog.length > 45),
-    });
-    onBeforeMount(async () => {
-      state.name = await getName(route.params.certificate);
     });
 
     return {
@@ -63,6 +44,7 @@ export default defineComponent({
   background-size: cover;
 }
 .dialog-text {
+  /* Share your certificate and show your skill! */
   position: absolute;
   width: 60vw;
   height: 3vw;

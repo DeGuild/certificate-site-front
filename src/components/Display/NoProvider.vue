@@ -1,6 +1,6 @@
 <template>
   <div class="image selected">
-    <img class="image selected display" src="@/assets/cry.jpg" />
+    <img class="image selected display" src="@/assets/metamask-fox.svg" />
   </div>
 </template>
 
@@ -8,7 +8,7 @@
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-  name: 'NoCertificate',
+  name: 'NoProvider',
 });
 </script>
 
