@@ -3,15 +3,9 @@
     "public": "dist",
     "site": "certificate-manager",
     "rewrites": [
-      {
-        "source": "**",
-        "destination": "/index.html"
-      }
+      { "source": "/app", "function": "app" }
     ],
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ]
+
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
   }
 }

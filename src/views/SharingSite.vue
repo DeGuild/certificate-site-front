@@ -20,20 +20,21 @@ export default {
   },
   setup() {
     const route = useRoute();
-    async function getImageUrl(address) {
+    async function getImageUrl(address, tokenType) {
       const imageUrl = await fetch(
-        `https://us-central1-deguild-2021.cloudfunctions.net/app/readCertificate/${address}`,
+        `https://us-central1-deguild-2021.cloudfunctions.net/app/readCertificate/${address}/${tokenType}`,
         { mode: 'cors' },
       );
 
       const dataUrl = await imageUrl.json();
-      return dataUrl.imageUrl;
+      // console.log(dataUrl.url);
+      return dataUrl.url;
     }
     const siteData = reactive({
       title: 'Certificate Showcase',
       description:
         'Best site to share your hard-earned certificates from Dapp!',
-      imageUrl: getImageUrl(route.params.certificate),
+      imageUrl: getImageUrl(route.params.certificate, route.params.tokenType),
     });
 
     useHead({
@@ -64,7 +65,7 @@ export default {
 
 <style>
 body {
-  background-image: url('../assets/wojaks.png');
+  background-image: url('../assets/bg.jpeg');
   background-size: cover;
   background-repeat: no-repeat;
   background-attachment: fixed;

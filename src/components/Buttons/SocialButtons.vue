@@ -49,8 +49,8 @@ export default {
   position: absolute;
   width: 6.979vw;
   height: 6.979vw;
-  left: 71.927vw;
-  top: 45.302vw;
+  left: 73vw;
+  top: 42vw;
 
   background: url('../../assets/twitter.png');
   background-size: cover;
@@ -60,8 +60,8 @@ export default {
   position: absolute;
   width: 6.979vw;
   height: 6.979vw;
-  left: 80.651vw;
-  top: 45.302vw;
+  left: 82vw;
+  top: 42vw;
 
   background: url('../../assets/facebook.png');
   background-size: cover;
