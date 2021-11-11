@@ -21,6 +21,9 @@ const Web3 = require('web3');
  * Using relative path, just clone the git beside this project directory and compile to run
  */
 const addressManger = '0xaeE33993cfA61e5C0BF434c548512cAEF33d475C';
+const {
+  abi,
+} = require('../../../../DeGuild-MG-CS-Token-contracts/artifacts/contracts/SkillCertificates/V2/ISkillCertificate+.sol/ISkillCertificatePlus.json');
 
 export default {
   name: 'ConnectWallet',
@@ -36,7 +39,19 @@ export default {
       certificateSet: null,
     });
     const web3 = new Web3(Web3.givenProvider || 'ws://localhost:8545');
-
+    /**
+     * Returns verification of the certificate
+     *
+     * @param {address} address The address of any contract using the interface given
+     * @return {bool} status of verification.
+     */
+    async function hasCertificate(address, tokenType) {
+      const certificateManager = new web3.eth.Contract(abi, address);
+      const caller = await certificateManager.methods
+        .verify(store.state.User.user, tokenType)
+        .call();
+      return caller;
+    }
     /**
      * Returns all certificates in the DeGuild system.
      *
@@ -58,36 +73,30 @@ export default {
       }
 
       state.certificateSet = await response.json();
-      const next = state.certificateSet.result[state.certificateSet.result.length - 1];
-      store.dispatch('User/setCertificateToFetch', next.tokenId);
-      return state.certificateSet;
+      // console.log(state.certificateSet);
+
+      let next;
+      if (state.certificateSet.length > 0) {
+        next = state.certificateSet[state.certificateSet.length - 1].tokenId;
+        store.dispatch('User/setCertificateToFetch', next);
+        const storedCertificate = store.state.User.certificates
+          ? store.state.User.certificates
+          : [];
+        state.certificateSet.forEach(async (element) => {
+          const verify = await hasCertificate(
+            addressManger,
+            element.tokenId,
+          );
+          if (verify) {
+            storedCertificate.push(element);
+          }
+        });
+        // console.log(storedCertificate);
+        store.dispatch('User/setCertificates', storedCertificate);
+      } else {
+        store.dispatch('User/setCertificateToFetch', null);
+      }
     }
-
-    /**
-     * Returns name of the address.
-     *
-     * @param {address} address The address of any contract using the interface given
-     * @return {string} name of the contract.
-     */
-    // async function getName(address) {
-    //   const certificateManager = new web3.eth.Contract(abi, address);
-    //   const caller = await certificateManager.methods.name().call();
-    //   return caller;
-    // }
-
-    /**
-     * Returns verification of the certificate
-     *
-     * @param {address} address The address of any contract using the interface given
-     * @return {bool} status of verification.
-     */
-    // async function hasCertificate(address, tokenType) {
-    //   const certificateManager = new web3.eth.Contract(abi, address);
-    //   const caller = await certificateManager.methods
-    //     .verify(store.state.User.user, tokenType)
-    //     .call();
-    //   return caller;
-    // }
 
     /**
      * Returns verification of the Rinkeby Network
@@ -143,14 +152,14 @@ export default {
           )}`;
           state.primary = connectedAddress;
           store.dispatch('User/setUser', accounts.result[0]);
-          let next = state.certificateSet.result;
           store.dispatch('User/setFetching', true);
 
-          while (next.length > 0) {
-            next = await fetchAllCertificates(
-              store.state.User.certificateToFetch,
-            );
+          await fetchAllCertificates();
+          while (await store.state.User.certificateToFetch) {
+            console.log(store.state.User.certificateToFetch);
+            await fetchAllCertificates(store.state.User.certificateToFetch);
           }
+
           store.dispatch('User/setFetching', false);
 
           return true;
@@ -203,8 +212,6 @@ export default {
         state.primary = 'CONNECT WALLET';
       }
       await verifyNetwork();
-      await fetchAllCertificates();
-
       window.ethereum.on('accountsChanged', handleAccountsChanged);
       window.ethereum.on('chainChanged', handleChainChanged);
     });

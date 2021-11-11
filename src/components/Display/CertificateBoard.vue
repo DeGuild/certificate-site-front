@@ -1,53 +1,62 @@
 <template>
-  <div class="background"></div>
-  <div v-for="imageIndex in 8" :key="imageIndex">
-    <div
-      class="background frame"
-      :style="state.stylesFrame[imageIndex - 1]"
-    ></div>
-    <div
-      class="half-circle-spinner"
-      :style="state.styles[imageIndex - 1]"
-      v-if="state.loading"
-    >
-      <div class="half-circle-spinner circle circle-1"></div>
-      <div class="half-circle-spinner circle circle-2"></div>
-    </div>
-    <div v-if="state.images">
-      <div v-if="state.images[imageIndex - 1]">
-        <div class="image" :style="state.styles[imageIndex - 1]">
-          <img
-            class="image display click"
-            :style="state.styles[imageIndex - 1]"
-            v-bind:src="state.images[imageIndex - 1]"
-            v-if="state.images[imageIndex - 1]"
-            v-on:click="choosing(imageIndex - 1)"
-          />
-        </div>
-      </div>
+  <div class="position-board">
+    <div class="background"></div>
+    <div v-for="imageIndex in 8" :key="imageIndex">
       <div
         class="background frame"
         :style="state.stylesFrame[imageIndex - 1]"
       ></div>
+      <div v-if="state.allCerts">
+        <div
+          v-if="imageIndex - 1 + state.pageIdx * 8 < state.allCerts.length"
+          v-show="!state.loading"
+        >
+          <div class="image" :style="state.styles[imageIndex - 1]">
+            <img
+              class="image display"
+              :style="state.styles[imageIndex - 1]"
+              :src="state.allCerts[imageIndex - 1 + state.pageIdx * 8].url"
+            />
+          </div>
+          <div
+            class="background frame click"
+            :style="state.stylesFrame[imageIndex - 1]"
+            v-on:click="choosing(imageIndex - 1 + state.pageIdx * 8)"
+          ></div>
+        </div>
+      </div>
+      <div v-if="state.loading">
+        <div class="image no-bg" :style="state.styles[imageIndex - 1]">
+          <img
+            class="image display no-bg"
+            :style="state.styles[imageIndex - 1]"
+            src="@/assets/Spinner-1s-200px.svg"
+          />
+        </div>
+        <div
+          class="background frame click"
+          :style="state.stylesFrame[imageIndex - 1]"
+        ></div>
+      </div>
     </div>
-  </div>
 
-  <button
-    class="navButton previous"
-    v-on:click="navigate(state.pageIdx - 1)"
-    v-if="state.pageIdx > 0"
-  >
-    &#60;
-  </button>
-  <button
-    class="navButton"
-    v-on:click="navigate(state.pageIdx + 1)"
-    v-if="state.pageIdx < state.allCerts.length / 8 - 1"
-  >
-    &#62;
-  </button>
-  <div class="image selected" v-if="state.imageSelected">
-    <img class="image selected display" :src="state.imageSelected" />
+    <button
+      class="navButton previous"
+      v-on:click="navigate(state.pageIdx - 1)"
+      v-if="state.pageIdx > 0"
+    >
+      &#60;
+    </button>
+    <button
+      class="navButton"
+      v-on:click="navigate(state.pageIdx + 1)"
+      v-if="state.pageIdx < state.allCerts.length / 8 - 1"
+    >
+      &#62;
+    </button>
+    <div class="image selected" v-if="state.imageSelected">
+      <img class="image selected display" :src="state.imageSelected" />
+    </div>
   </div>
 </template>
 
@@ -60,118 +69,10 @@ export default defineComponent({
   setup() {
     const store = useStore();
 
-    /**
-     * Returns the urls of the certificates of this user
-     *
-     * @param {certificate[]} proxy The certificates of this user
-     * @return {string[]} array of the urls.
-     */
-    function urlExtractor(proxy) {
-      const urlArr = [];
-      for (let index = 0; index < proxy.length; index += 1) {
-        if (proxy[index].length !== 0) urlArr.push(proxy[index][1].imageUrl);
-      }
-      return urlArr;
-    }
-
-    /**
-     * Returns the name of the certificates of this user
-     *
-     * @param {certificate[]} proxy The certificates of this user
-     * @return {string[]} array of the names.
-     */
-    function nameExtractor(proxy) {
-      const urlArr = [];
-      for (let index = 0; index < proxy.length; index += 1) {
-        if (proxy[index].length !== 0) urlArr.push(proxy[index][0]);
-      }
-      return urlArr;
-    }
-
-    /**
-     * Returns the address of the certificates of this user
-     *
-     * @param {certificate[]} proxy The certificates of this user
-     * @return {string[]} array of the addresses.
-     */
-    function addressExtractor(proxy) {
-      const urlArr = [];
-      for (let index = 0; index < proxy.length; index += 1) {
-        if (proxy[index].length !== 0) urlArr.push(proxy[index][2]);
-      }
-      return urlArr;
-    }
-
-    /**
-     * Returns the computed image urls to display
-     *
-     * @return {string[]} array of the image urls.
-     */
-    function computeImages() {
-      const page = [];
-      const certs = store.state.User.certificates
-        ? urlExtractor(store.state.User.certificates)
-        : store.state.User.certificates;
-      const startIdx = 0 + store.state.User.certificatePage * 8;
-      if (certs) {
-        const amount = startIdx + 8 < certs.length ? startIdx + 8 : certs.length;
-        for (let index = startIdx; index < amount; index += 1) {
-          const element = certs[index];
-          page.push(element);
-        }
-      }
-      return page;
-    }
-
-    /**
-     * Returns the computed image names to display
-     *
-     * @return {string[]} array of the image names.
-     */
-    function computeNames() {
-      const page = [];
-      const certs = store.state.User.certificates
-        ? nameExtractor(store.state.User.certificates)
-        : store.state.User.certificates;
-      const startIdx = 0 + store.state.User.certificatePage * 8;
-      if (certs) {
-        const amount = startIdx + 8 < certs.length ? startIdx + 8 : certs.length;
-        for (let index = startIdx; index < amount; index += 1) {
-          const element = certs[index];
-          page.push(element);
-        }
-      }
-      return page;
-    }
-
-    /**
-     * Returns the computed image addresses to display
-     *
-     * @return {string[]} array of the image addresses.
-     */
-    function computeAddresses() {
-      const page = [];
-      const certs = store.state.User.certificates
-        ? addressExtractor(store.state.User.certificates)
-        : store.state.User.certificates;
-      const startIdx = 0 + store.state.User.certificatePage * 8;
-      if (certs) {
-        const amount = startIdx + 8 < certs.length ? startIdx + 8 : certs.length;
-        for (let index = startIdx; index < amount; index += 1) {
-          const element = certs[index];
-          page.push(element);
-        }
-      }
-      return page;
-    }
-
     const state = reactive({
       imageSelected: computed(() => (store.state.User.certificateSelected
-        ? store.state.User.certificateSelected[0]
+        ? store.state.User.certificateSelected.url
         : null)),
-      images: computed(computeImages),
-      names: computed(computeNames),
-      addresses: computed(computeAddresses),
       loading: computed(() => store.state.User.fetching),
       // eslint-disable-next-line max-len
       allCerts: computed(() => (store.state.User.certificates ? store.state.User.certificates : [])),
@@ -212,35 +113,35 @@ export default defineComponent({
       ],
       stylesFrame: [
         {
-          left: '9.4vw',
+          left: '9.5vw',
           top: '25.9vw',
         },
         {
-          left: '21.379vw',
+          left: '21.5vw',
           top: '25.9vw',
         },
         {
-          left: '33.358vw',
+          left: '33.5vw',
           top: '25.9vw',
         },
         {
-          left: '45.337vw',
+          left: '45.45vw',
           top: '25.9vw',
         },
         {
-          left: '9.4vw',
+          left: '9.5vw',
           top: '37.515vw',
         },
         {
-          left: '21.379vw',
+          left: '21.5vw',
           top: '37.515vw',
         },
         {
-          left: '33.358vw',
+          left: '33.5vw',
           top: '37.515vw',
         },
         {
-          left: '45.337vw',
+          left: '45.45vw',
           top: '37.515vw',
         },
       ],
@@ -252,15 +153,15 @@ export default defineComponent({
      * @param {int} imageIdx The image index chosen
      */
     function choosing(imageIdx) {
-      const displayText = `Amazing! You have learned ${state.names[imageIdx]}`;
-      store.dispatch('User/setSelectedCertificateName', state.names[imageIdx]);
-      store.dispatch('User/setChosenCertificate', [
-        state.images[imageIdx],
-        store.state.User.certificates[imageIdx][2],
-      ]);
+      const displayText = `Amazing! You have learned ${state.allCerts[imageIdx].title}`;
+      store.dispatch(
+        'User/setSelectedCertificateName',
+        state.allCerts[imageIdx].title,
+      );
+      store.dispatch('User/setChosenCertificate', state.allCerts[imageIdx]);
       store.dispatch(
         'User/setSharingCertificate',
-        `${window.location.origin}/sharing/${store.state.User.user}/${state.addresses[imageIdx]}`,
+        `https://us-central1-deguild-2021.cloudfunctions.net/app/shareCertificate/${store.state.User.user}/${state.allCerts[imageIdx].address}/${state.allCerts[imageIdx].tokenId}`,
       );
       store.dispatch('User/setDialog', displayText);
     }
@@ -273,6 +174,9 @@ export default defineComponent({
     function navigate(pageIdx) {
       store.images = [];
       store.dispatch('User/setCertificatePage', pageIdx);
+      store.dispatch('User/setFetching', true);
+      setTimeout(() => store.dispatch('User/setFetching', false), 10);
+
       return true;
     }
 
@@ -286,20 +190,20 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-.image {
-  width: 7.5vw;
-  height: 7.5vw;
+.position-board {
   position: absolute;
-
+  top: -3vw;
+}
+.image {
+  width: 7.6vw;
+  height: 7.6vw;
+  position: absolute;
+  background: url('../../assets/Spinner-1s-200px.svg') no-repeat center;
+  &.no-bg {
+    background: unset;
+  }
   &.display {
     position: static;
-  }
-
-  &.click {
-    cursor: pointer;
-    &:hover {
-      opacity: 0.9;
-    }
   }
 
   &.selected {
@@ -321,6 +225,9 @@ export default defineComponent({
     height: 8.542vw;
     background: url('../../assets/certificateFrame.png');
     background-size: cover;
+    &.click {
+      cursor: pointer;
+    }
   }
 }
 .navButton {
@@ -364,43 +271,6 @@ export default defineComponent({
 
   &:hover {
     background: #c82333;
-  }
-}
-.half-circle-spinner {
-  box-sizing: border-box;
-  width: 5vw;
-  height: 5vw;
-  top: 1.1vw;
-  left: 1.1vw;
-  border-radius: 100%;
-  position: absolute;
-
-  &.circle {
-    content: '';
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    border-radius: 100%;
-    border: calc(60px / 10) solid transparent;
-  }
-
-  &.circle.circle-1 {
-    border-top-color: #ff1d5e;
-    animation: half-circle-spinner-animation 1s infinite;
-  }
-
-  &.circle.circle-2 {
-    border-bottom-color: #ff1d5e;
-    animation: half-circle-spinner-animation 1s infinite alternate;
-  }
-
-  @keyframes half-circle-spinner-animation {
-    0% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(360deg);
-    }
   }
 }
 </style>
