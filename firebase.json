@@ -3,7 +3,11 @@
     "public": "dist",
     "site": "certificate-manager",
     "rewrites": [
-      { "source": "/api/**", "function": "app" }
+      { "source": "/api/**", "function": "app" },
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
     ],
 
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
