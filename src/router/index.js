@@ -4,7 +4,7 @@ const Web3 = require('web3');
 
 const {
   abi,
-} = require('../../../DeGuild-MG-CS-Token-contracts/artifacts/contracts/SkillCertificates/ISkillCertificate.sol/ISkillCertificate.json');
+} = require('../../../DeGuild-MG-CS-Token-contracts/artifacts/contracts/SkillCertificates/V2/ISkillCertificate+.sol/ISkillCertificatePlus.json');
 
 async function hasCertificate(address, user) {
   const web3 = new Web3(Web3.givenProvider || 'ws://localhost:8545');
@@ -48,7 +48,7 @@ const routes = [
     component: () => import('@/views/NoProvider.vue'),
   },
   {
-    path: '/sharing/:address/:certificate',
+    path: '/sharing/:certificate/:address/:tokenType',
     name: 'About',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route

@@ -5,7 +5,11 @@
       class="background frame"
       :style="state.stylesFrame[imageIndex - 1]"
     ></div>
-    <div class="half-circle-spinner" :style="state.styles[imageIndex - 1]" v-if="state.loading">
+    <div
+      class="half-circle-spinner"
+      :style="state.styles[imageIndex - 1]"
+      v-if="state.loading"
+    >
       <div class="half-circle-spinner circle circle-1"></div>
       <div class="half-circle-spinner circle circle-2"></div>
     </div>
@@ -21,6 +25,10 @@
           />
         </div>
       </div>
+      <div
+        class="background frame"
+        :style="state.stylesFrame[imageIndex - 1]"
+      ></div>
     </div>
   </div>
 

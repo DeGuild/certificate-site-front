@@ -20,9 +20,7 @@ const Web3 = require('web3');
 /**
  * Using relative path, just clone the git beside this project directory and compile to run
  */
-const {
-  abi,
-} = require('../../../../DeGuild-MG-CS-Token-contracts/artifacts/contracts/SkillCertificates/ISkillCertificate.sol/ISkillCertificate.json');
+const addressManger = '0xaeE33993cfA61e5C0BF434c548512cAEF33d475C';
 
 export default {
   name: 'ConnectWallet',
@@ -49,19 +47,19 @@ export default {
       let response = null;
       if (nextToFetch) {
         response = await fetch(
-          `https://us-central1-deguild-2021.cloudfunctions.net/app/allCertificates/${nextToFetch}/next`,
+          `https://us-central1-deguild-2021.cloudfunctions.net/app/allCertificates/${addressManger}/${nextToFetch}/next`,
           { mode: 'cors' },
         );
       } else {
         response = await fetch(
-          'https://us-central1-deguild-2021.cloudfunctions.net/app/allCertificatesOnce',
+          `https://us-central1-deguild-2021.cloudfunctions.net/app/allCertificates/${addressManger}`,
           { mode: 'cors' },
         );
       }
 
       state.certificateSet = await response.json();
       const next = state.certificateSet.result[state.certificateSet.result.length - 1];
-      store.dispatch('User/setCertificateToFetch', next);
+      store.dispatch('User/setCertificateToFetch', next.tokenId);
       return state.certificateSet;
     }
 
@@ -71,11 +69,11 @@ export default {
      * @param {address} address The address of any contract using the interface given
      * @return {string} name of the contract.
      */
-    async function getName(address) {
-      const certificateManager = new web3.eth.Contract(abi, address);
-      const caller = await certificateManager.methods.name().call();
-      return caller;
-    }
+    // async function getName(address) {
+    //   const certificateManager = new web3.eth.Contract(abi, address);
+    //   const caller = await certificateManager.methods.name().call();
+    //   return caller;
+    // }
 
     /**
      * Returns verification of the certificate
@@ -83,13 +81,13 @@ export default {
      * @param {address} address The address of any contract using the interface given
      * @return {bool} status of verification.
      */
-    async function hasCertificate(address) {
-      const certificateManager = new web3.eth.Contract(abi, address);
-      const caller = await certificateManager.methods
-        .verify(store.state.User.user)
-        .call();
-      return caller;
-    }
+    // async function hasCertificate(address, tokenType) {
+    //   const certificateManager = new web3.eth.Contract(abi, address);
+    //   const caller = await certificateManager.methods
+    //     .verify(store.state.User.user, tokenType)
+    //     .call();
+    //   return caller;
+    // }
 
     /**
      * Returns verification of the Rinkeby Network
@@ -126,31 +124,6 @@ export default {
     }
 
     /**
-     * Returns the information of the certificate of this user
-     *
-     * @param {address} address The address of any contract using the interface given
-     * @return {certificate[]} array of the certificates.
-     */
-    async function userCertificateChecker(address) {
-      const hasCertificateResult = await hasCertificate(address);
-      const certificateArray = [];
-
-      if (hasCertificateResult) {
-        const name = await getName(address);
-        const imageUrl = await fetch(
-          `https://us-central1-deguild-2021.cloudfunctions.net/app/readCertificate/${address}`,
-          { mode: 'cors' },
-        );
-
-        const dataUrl = await imageUrl.json();
-        certificateArray.push(name);
-        certificateArray.push(dataUrl);
-        certificateArray.push(address);
-      }
-      return certificateArray;
-    }
-
-    /**
      * Connect user to the dapp
      * @return {bool} status of connection.
      */
@@ -170,23 +143,10 @@ export default {
           )}`;
           state.primary = connectedAddress;
           store.dispatch('User/setUser', accounts.result[0]);
-          let next = state.certificateSet.result.length;
-          let toAdd = [];
-          const userCertificates = [];
+          let next = state.certificateSet.result;
           store.dispatch('User/setFetching', true);
 
-          while (next > 0) {
-            const cersVerified = await Promise.all(
-              state.certificateSet.result.map(userCertificateChecker),
-            );
-
-            toAdd = toAdd.concat(cersVerified);
-            toAdd.forEach((element) => {
-              if (element.length > 0) userCertificates.push(element);
-            });
-            // console.log(toAdd);
-
-            store.dispatch('User/setCertificates', userCertificates);
+          while (next.length > 0) {
             next = await fetchAllCertificates(
               store.state.User.certificateToFetch,
             );

@@ -21,7 +21,7 @@
   margin-top: 60px;
 }
 body {
-  background-image: url('assets/cert_bg.png');
+  background-image: url('assets/bg.jpeg');
   background-size: cover;
   background-repeat: no-repeat;
   background-attachment: fixed;

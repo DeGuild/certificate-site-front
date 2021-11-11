@@ -21,7 +21,7 @@ const Web3 = require('web3');
 
 const {
   abi,
-} = require('../../../../DeGuild-MG-CS-Token-contracts/artifacts/contracts/SkillCertificates/ISkillCertificate.sol/ISkillCertificate.json');
+} = require('../../../../DeGuild-MG-CS-Token-contracts/artifacts/contracts/SkillCertificates/V2/ISkillCertificate+.sol/ISkillCertificatePlus.json');
 
 export default defineComponent({
   name: 'Wow',
