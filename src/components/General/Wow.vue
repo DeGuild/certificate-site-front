@@ -122,8 +122,8 @@ export default defineComponent({
   position: absolute;
   width: 10vw;
   height: 3vw;
-  left: 45.052vw;
-  top: 45vw;
+  left: 88vw;
+  top: 20px;
 
   background: #db2c00;
   border-radius: 4px;
