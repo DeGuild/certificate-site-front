@@ -156,7 +156,7 @@ export default {
 
           await fetchAllCertificates();
           while (await store.state.User.certificateToFetch) {
-            console.log(store.state.User.certificateToFetch);
+            // console.log(store.state.User.certificateToFetch);
             await fetchAllCertificates(store.state.User.certificateToFetch);
           }
 
