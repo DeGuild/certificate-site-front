@@ -2,7 +2,7 @@
   <div v-if="$store.state.User.certificateSelected">
     <ShareNetwork
       network="facebook"
-      :url="state.sharingUrl"
+      :url="state.sharingUrlFB"
       hashtags="DeGuild,Skill"
     >
       <div class="facebook"></div>
@@ -32,6 +32,7 @@ export default {
       btn1style: {},
       network: '',
       sharingUrl: computed(() => store.state.User.certificateSharing),
+      sharingUrlFB: computed(() => store.state.User.certificateSharingFB),
       title: computed(
         () => `Check out my ${store.state.User.certificateSelectedName} certificate! Do you want to earn one for yourself? Visit a magic shop and buy some scrolls!`,
       ),

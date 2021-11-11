@@ -7,6 +7,7 @@ export const UserModule = {
     certificateSelected: null,
     certificateToFetch: null,
     certificatePage: 0,
+    certificateSharingFB: '',
     certificateSharing: '',
     certificateSelectedName: '',
     fetching: false,
@@ -28,6 +29,9 @@ export const UserModule = {
     },
     SET_SHARING_CERTIFICATE(state, link) {
       state.certificateSharing = link;
+    },
+    SET_SHARING_CERTIFICATEFB(state, link) {
+      state.certificateSharingFB = link;
     },
     SET_TO_FETCH_CERTIFICATE(state, cer) {
       state.certificateToFetch = cer;
@@ -57,6 +61,9 @@ export const UserModule = {
     },
     setSharingCertificate({ commit }, link) {
       commit('SET_SHARING_CERTIFICATE', link);
+    },
+    setSharingCertificateFB({ commit }, link) {
+      commit('SET_SHARING_CERTIFICATEFB', link);
     },
     setCertificateToFetch({ commit }, cert) {
       commit('SET_TO_FETCH_CERTIFICATE', cert);

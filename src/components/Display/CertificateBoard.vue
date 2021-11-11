@@ -163,6 +163,10 @@ export default defineComponent({
         'User/setSharingCertificate',
         `${window.location.origin}/api/shareCertificate/${state.allCerts[imageIdx].address}/${store.state.User.user}/${state.allCerts[imageIdx].tokenId}`,
       );
+      store.dispatch(
+        'User/setSharingCertificateFB',
+        `https://us-central1-deguild-2021.cloudfunctions.net/app/shareCertificate/${state.allCerts[imageIdx].address}/${store.state.User.user}/${state.allCerts[imageIdx].tokenId}`,
+      );
       store.dispatch('User/setDialog', displayText);
     }
 
