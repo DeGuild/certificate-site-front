@@ -3,7 +3,7 @@
     "public": "dist",
     "site": "certificate-manager",
     "rewrites": [
-      { "source": "/app", "function": "app" }
+      { "source": "/app/shareCertificate/:addressC/:addressU/:tokenType", "function": "app" }
     ],
 
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
