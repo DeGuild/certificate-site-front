@@ -83,10 +83,7 @@ export default {
           ? store.state.User.certificates
           : [];
         state.certificateSet.forEach(async (element) => {
-          const verify = await hasCertificate(
-            addressManger,
-            element.tokenId,
-          );
+          const verify = await hasCertificate(addressManger, element.tokenId);
           if (verify) {
             storedCertificate.push(element);
           }
@@ -165,8 +162,9 @@ export default {
           return true;
         } catch (error) {
           state.primary = 'ERROR!';
-          route.push('/no-provider');
         }
+      } else {
+        route.push('/no-provider');
       }
       return false;
     }
