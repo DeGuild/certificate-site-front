@@ -161,7 +161,7 @@ export default defineComponent({
       store.dispatch('User/setChosenCertificate', state.allCerts[imageIdx]);
       store.dispatch(
         'User/setSharingCertificate',
-        `${window.location.origin}/api/shareCertificate/${store.state.User.user}/${state.allCerts[imageIdx].address}/${state.allCerts[imageIdx].tokenId}`,
+        `${window.location.origin}/api/shareCertificate/${state.allCerts[imageIdx].address}/${store.state.User.user}/${state.allCerts[imageIdx].tokenId}`,
       );
       store.dispatch('User/setDialog', displayText);
     }
