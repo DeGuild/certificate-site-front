@@ -1,12 +1,11 @@
 <template>
+  <div class="wojak"></div>
   <div class="dialog">
     <div class="dialog-text" v-bind:class="{ smaller: state.dialogStyle }">
-      {{ state.name }}
+      {{ state.dialog }}
     </div>
   </div>
-  <button class="btn" v-on:click="this.$router.push('/backhome')">
-    back to home
-  </button>
+  <button class="btn" v-on:click="this.$router.push('/')">back to home</button>
 </template>
 
 <script>
@@ -36,13 +35,35 @@ export default defineComponent({
       const caller = await certificateManager.methods.name().call();
       return caller;
     }
+    /**
+     * Returns the url of the certificate address
+     *
+     * @param {address} address The certificate's address
+     * @return {string} certificate's url.
+     */
+    async function getTitle(address, tokenType) {
+      const imageUrl = await fetch(
+        `https://us-central1-deguild-2021.cloudfunctions.net/app/readCertificate/${address}/${tokenType}`,
+        { mode: 'cors' },
+      );
+
+      const dataUrl = await imageUrl.json();
+      // console.log(dataUrl.url);
+      return dataUrl.title;
+    }
     const state = reactive({
       name: null,
+      title: null,
       dialog: computed(() => store.state.User.dialog),
       dialogStyle: computed(() => store.state.User.dialog.length > 45),
     });
     onBeforeMount(async () => {
       state.name = await getName(route.params.certificate);
+      state.title = await getTitle(
+        route.params.certificate,
+        route.params.tokenType,
+      );
+      store.dispatch('User/setDialog', `${state.title} by ${state.name}`);
     });
 
     return {
@@ -52,6 +73,15 @@ export default defineComponent({
 });
 </script>
 <style lang="scss" scoped>
+.wojak {
+  width: 100vw;
+  height: 100vh;
+  bottom: 0vh;
+  left: 0vw;
+  position: absolute;
+  background: #c4c4c4;
+  background: url('../../assets/wojaks.png') no-repeat center;
+}
 .dialog {
   position: absolute;
   width: 67.552vw;
@@ -84,7 +114,6 @@ export default defineComponent({
 }
 
 .btn {
-
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -94,7 +123,7 @@ export default defineComponent({
   width: 10vw;
   height: 3vw;
   left: 45.052vw;
-  top: 43.458vw;
+  top: 45vw;
 
   background: #db2c00;
   border-radius: 4px;

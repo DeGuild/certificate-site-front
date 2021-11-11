@@ -6,30 +6,18 @@ const {
   abi,
 } = require('../../../DeGuild-MG-CS-Token-contracts/artifacts/contracts/SkillCertificates/V2/ISkillCertificate+.sol/ISkillCertificatePlus.json');
 
-async function hasCertificate(address, user) {
-  const web3 = new Web3(Web3.givenProvider || 'ws://localhost:8545');
-
-  try {
-    const certificateManager = new web3.eth.Contract(abi, address);
-
-    const caller = await certificateManager.methods.verify(user).call();
-    return caller;
-  } catch (error) {
-    console.log(error);
-    return false;
-  }
+async function hasCertificate(certificate, address, tokenType) {
+  // Use dotenv
+  const web3 = new Web3('https://eth-rinkeby.alchemyapi.io/v2/XRPvFg0y_AkvSkUCsWrdWLQa8hDXPE8K');
+  const certificateManager = new web3.eth.Contract(abi, certificate);
+  const caller = await certificateManager.methods.verify(address, tokenType).call();
+  return caller;
 }
 const routes = [
   {
     path: '/',
     name: 'Home',
     component: () => import('../views/CertificateSite.vue'),
-  },
-  {
-    path: '/backhome',
-    beforeEnter() {
-      window.location.href = window.location.origin;
-    },
   },
   {
     path: '/metamask',
@@ -55,22 +43,12 @@ const routes = [
     // which is lazy-loaded when the route is visited.
     component: () => import('../views/SharingSite.vue'),
     beforeEnter: async (to, from, next) => {
-      try {
-        //  Rinkeby chain id
-        await window.ethereum.request({
-          method: 'wallet_switchEthereumChain',
-          params: [{ chainId: '0x4' }],
-        });
-        const { address } = to.params;
-        const { certificate } = to.params;
-        const hasCertificateResult = await hasCertificate(certificate, address);
-        if (hasCertificateResult) {
-          next();
-        }
-      } catch (switchError) {
-        // This error code indicates that the chain has not been added to MetaMask.
-        next('/no-provider');
-        // handle other "switch" errors
+      const { address } = to.params;
+      const { tokenType } = to.params;
+      const { certificate } = to.params;
+      const hasCertificateResult = await hasCertificate(certificate, address, tokenType);
+      if (hasCertificateResult) {
+        next();
       }
       // ...
 

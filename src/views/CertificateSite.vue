@@ -1,7 +1,8 @@
 <template>
-  <Dialog />
   <connect-wallet />
   <div v-if="user !== null">
+      <Dialog />
+
     <social-button />
     <certificate-board />
   </div>
