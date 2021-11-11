@@ -5,7 +5,15 @@
     "rewrites": [
       { "source": "/api/**", "function": "app" },
       {
-        "source": "**",
+        "source": "/sharing/**",
+        "destination": "/index.html"
+      },
+      {
+        "source": "/",
+        "destination": "/index.html"
+      },
+      {
+        "source": "/metamask",
         "destination": "/index.html"
       }
     ],
