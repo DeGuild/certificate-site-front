@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
 const Web3 = require('web3');
+require('dotenv').config();
 
 const {
   abi,
@@ -8,7 +9,7 @@ const {
 
 async function hasCertificate(certificate, address, tokenType) {
   // Use dotenv
-  const web3 = new Web3('https://eth-rinkeby.alchemyapi.io/v2/XRPvFg0y_AkvSkUCsWrdWLQa8hDXPE8K');
+  const web3 = new Web3(process.env.VUE_APP_ALCHEMY_API);
   const certificateManager = new web3.eth.Contract(abi, certificate);
   const caller = await certificateManager.methods.verify(address, tokenType).call();
   return caller;
