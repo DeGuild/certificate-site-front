@@ -34,7 +34,7 @@
           />
         </div>
         <div
-          class="background frame click"
+          class="background frame"
           :style="state.stylesFrame[imageIndex - 1]"
         ></div>
       </div>
