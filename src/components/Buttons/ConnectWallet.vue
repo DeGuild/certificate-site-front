@@ -11,89 +11,46 @@
 /* eslint-disable no-await-in-loop */
 
 import { useStore } from 'vuex';
-import { useRoute } from 'vue-router';
+import { useRouter } from 'vue-router';
 
 import { reactive, onBeforeMount, computed } from 'vue';
 
 const Web3 = require('web3');
 
-/**
- * Using relative path, just clone the git beside this project directory and compile to run
- */
-const addressManger = '0xaeE33993cfA61e5C0BF434c548512cAEF33d475C';
-const {
-  abi,
-} = require('../../../../DeGuild-MG-CS-Token-contracts/artifacts/contracts/SkillCertificates/V2/ISkillCertificate+.sol/ISkillCertificatePlus.json');
-
 export default {
   name: 'ConnectWallet',
   setup() {
     const store = useStore();
-    const route = useRoute();
+    const router = useRouter();
 
     const user = computed(() => store.state.User.user);
 
+    function shortenedAddress(address) {
+      if (!address) {
+        return "<i class='fas fa-spinner fa-spin'></i>";
+      }
+      const accountLength = address.length;
+      const connectedAddress = `${address.substring(
+        0,
+        5,
+      )}...${address.substring(accountLength - 4, accountLength)}`;
+      return connectedAddress;
+    }
+
     const state = reactive({
-      primary: 'SOMETHING WENT WRONG',
+      primary: computed(() => (store.state.User.fetching || store.state.User.user
+        ? shortenedAddress(store.state.User.user)
+        : 'CONNECT WALLET')),
       network: '',
       certificateSet: null,
     });
     const web3 = new Web3(Web3.givenProvider || 'ws://localhost:8545');
-    /**
-     * Returns verification of the certificate
-     *
-     * @param {address} address The address of any contract using the interface given
-     * @return {bool} status of verification.
-     */
-    async function hasCertificate(address, tokenType) {
-      const certificateManager = new web3.eth.Contract(abi, address);
-      const caller = await certificateManager.methods
-        .verify(store.state.User.user, tokenType)
-        .call();
-      return caller;
-    }
     /**
      * Returns all certificates in the DeGuild system.
      *
      * @param {address} nextToFetch The address we lastly fetched
      * @return {address[]} all certificates in the DeGuild system.
      */
-    async function fetchAllCertificates(nextToFetch) {
-      let response = null;
-      if (nextToFetch) {
-        response = await fetch(
-          `https://us-central1-deguild-2021.cloudfunctions.net/app/allCertificates/${addressManger}/${nextToFetch}/next`,
-          { mode: 'cors' },
-        );
-      } else {
-        response = await fetch(
-          `https://us-central1-deguild-2021.cloudfunctions.net/app/allCertificates/${addressManger}`,
-          { mode: 'cors' },
-        );
-      }
-
-      state.certificateSet = await response.json();
-      // console.log(state.certificateSet);
-
-      let next;
-      if (state.certificateSet.length > 0) {
-        next = state.certificateSet[state.certificateSet.length - 1].tokenId;
-        store.dispatch('User/setCertificateToFetch', next);
-        const storedCertificate = store.state.User.certificates
-          ? store.state.User.certificates
-          : [];
-        state.certificateSet.forEach(async (element) => {
-          const verify = await hasCertificate(addressManger, element.tokenId);
-          if (verify) {
-            storedCertificate.push(element);
-          }
-        });
-        // console.log(storedCertificate);
-        store.dispatch('User/setCertificates', storedCertificate);
-      } else {
-        store.dispatch('User/setCertificateToFetch', null);
-      }
-    }
 
     /**
      * Returns verification of the Rinkeby Network
@@ -138,33 +95,17 @@ export default {
 
       if (window.ethereum) {
         try {
-          const accounts = await window.ethereum.send('eth_requestAccounts');
-          const accountLength = accounts.result[0].length;
-          const connectedAddress = `${accounts.result[0].substring(
-            0,
-            5,
-          )}...${accounts.result[0].substring(
-            accountLength - 4,
-            accountLength,
-          )}`;
-          state.primary = connectedAddress;
-          store.dispatch('User/setUser', accounts.result[0]);
-          store.dispatch('User/setFetching', true);
-
-          await fetchAllCertificates();
-          while (await store.state.User.certificateToFetch) {
-            // console.log(store.state.User.certificateToFetch);
-            await fetchAllCertificates(store.state.User.certificateToFetch);
-          }
-
-          store.dispatch('User/setFetching', false);
+          const accounts = await window.ethereum.request({
+            method: 'eth_requestAccounts',
+          });
+          store.dispatch('User/setUser', accounts[0]);
 
           return true;
         } catch (error) {
-          state.primary = 'ERROR!';
+          store.dispatch('User/setUser', null);
         }
       } else {
-        route.push('/no-provider');
+        router.push('/no-provider');
       }
       return false;
     }

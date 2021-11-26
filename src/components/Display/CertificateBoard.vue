@@ -50,7 +50,7 @@
     <button
       class="navButton"
       v-on:click="navigate(state.pageIdx + 1)"
-      v-if="state.pageIdx < state.allCerts.length / 8 - 1"
+      v-if="state.hasNext"
     >
       &#62;
     </button>
@@ -61,7 +61,9 @@
 </template>
 
 <script>
-import { defineComponent, reactive, computed } from 'vue';
+import {
+  defineComponent, reactive, computed, onBeforeMount,
+} from 'vue';
 import { useStore } from 'vuex';
 
 export default defineComponent({
@@ -77,6 +79,7 @@ export default defineComponent({
       // eslint-disable-next-line max-len
       allCerts: computed(() => (store.state.User.certificates ? store.state.User.certificates : [])),
       pageIdx: computed(() => store.state.User.certificatePage),
+      hasNext: computed(() => store.state.User.certificateToFetch),
       styles: [
         {
           left: '10vw',
@@ -147,6 +150,34 @@ export default defineComponent({
       ],
     });
 
+    async function fetchAllCertificates(pageIdx) {
+      const response = await fetch(
+        `https://us-central1-deguild-2021.cloudfunctions.net/app/certificates/${store.state.User.user}/${pageIdx}`,
+        { mode: 'cors' },
+      );
+      const responseNext = await fetch(
+        `https://us-central1-deguild-2021.cloudfunctions.net/app/certificates/${
+          store.state.User.user
+        }/${pageIdx + 1}`,
+        { mode: 'cors' },
+      );
+
+      if (response.status === 200) {
+        const certificateSet = await response.json();
+        store.dispatch('User/setCertificates', certificateSet);
+        console.log(certificateSet);
+
+        if (responseNext.status === 200) {
+          store.dispatch('User/setCertificateToFetch', true);
+        } else {
+          store.dispatch('User/setCertificateToFetch', false);
+        }
+      } else {
+        store.dispatch('User/setCertificates', []);
+        store.dispatch('User/setCertificateToFetch', null);
+      }
+    }
+
     /**
      * Display the image chosen from the board
      *
@@ -175,14 +206,21 @@ export default defineComponent({
      *
      * @param {int} pageIdx The page index chosen
      */
-    function navigate(pageIdx) {
+    async function navigate(pageIdx) {
       store.images = [];
       store.dispatch('User/setCertificatePage', pageIdx);
       store.dispatch('User/setFetching', true);
+      await fetchAllCertificates(pageIdx);
       setTimeout(() => store.dispatch('User/setFetching', false), 10);
 
       return true;
     }
+
+    onBeforeMount(async () => {
+      store.dispatch('User/setFetching', true);
+      await fetchAllCertificates(0);
+      store.dispatch('User/setFetching', false);
+    });
 
     return {
       state,
