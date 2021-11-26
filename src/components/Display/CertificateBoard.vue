@@ -165,7 +165,7 @@ export default defineComponent({
       if (response.status === 200) {
         const certificateSet = await response.json();
         store.dispatch('User/setCertificates', certificateSet);
-        console.log(certificateSet);
+        // console.log(certificateSet);
 
         if (responseNext.status === 200) {
           store.dispatch('User/setCertificateToFetch', true);
