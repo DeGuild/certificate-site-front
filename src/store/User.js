@@ -5,7 +5,7 @@ export const UserModule = {
     user: null,
     certificates: null,
     certificateSelected: null,
-    certificateToFetch: null,
+    certificateToFetch: false,
     certificatePage: 0,
     certificateSharingFB: '',
     certificateSharing: '',
