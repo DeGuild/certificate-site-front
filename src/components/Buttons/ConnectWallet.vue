@@ -8,8 +8,6 @@
 </template>
 
 <script>
-/* eslint-disable no-await-in-loop */
-
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 
@@ -45,6 +43,7 @@ export default {
       certificateSet: null,
     });
     const web3 = new Web3(Web3.givenProvider || 'ws://localhost:8545');
+
     /**
      * Returns all certificates in the DeGuild system.
      *
