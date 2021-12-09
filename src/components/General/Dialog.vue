@@ -1,4 +1,6 @@
 <template>
+  <div class="npc"></div>
+
   <div class="dialog">
     <div
       class="dialog-text"
@@ -7,7 +9,6 @@
       {{ state.dialog }}
     </div>
   </div>
-  <div class="npc"></div>
 </template>
 
 <script>
@@ -34,7 +35,7 @@ export default defineComponent({
   position: absolute;
   width: 68vw;
   height: 13.1vw;
-  left: 27.24vw;
+  left: 27.74vw;
   top: 5.417vw;
 
   background: url('../../assets/dialogue.png');
@@ -45,7 +46,7 @@ export default defineComponent({
   position: absolute;
   width: 60vw;
   height: 3vw;
-  left: 5vw;
+  left: 5.5vw;
   top: 5.5vw;
   font-family: Secular One;
   font-style: normal;
@@ -63,10 +64,10 @@ export default defineComponent({
 }
 .npc {
   position: absolute;
-  width: 22vw;
-  height: 22vw;
-  left: 5vw;
-  top: 0vw;
+  width: 25vw;
+  height: 20vw;
+  left: 4.5vw;
+  top: 1.5vw;
 
   background: url('../../assets/npc.png');
   background-size: cover;

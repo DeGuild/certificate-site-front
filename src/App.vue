@@ -4,7 +4,7 @@
     href="https://use.fontawesome.com/releases/v5.2.0/css/all.css"
     integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ"
     crossorigin="anonymous"
-  />    <footer></footer>
+  />
 
   <router-view />
 
@@ -16,12 +16,11 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  //this is where we use the variable
   color: #ffffff;
   margin-top: 60px;
 }
 body {
-  background-image: url('assets/cert_bg.png');
+  background-image: url('assets/bg.jpeg');
   background-size: cover;
   background-repeat: no-repeat;
   background-attachment: fixed;

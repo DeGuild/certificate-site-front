@@ -4,7 +4,7 @@
       Sorry, the requested link was not verified.
     </div>
   </div>
-  <button class="btn" v-on:click="this.$router.push('/backhome')">
+  <button class="btn" v-on:click="this.$router.push('/')">
     back to home
   </button>
 </template>

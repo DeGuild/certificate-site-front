@@ -1,5 +1,5 @@
 <template>
-  <div class="image selected">
+  <div class="image selected" v-show="state.imageSelected">
     <img class="image selected display" :src="state.imageSelected" />
   </div>
   <div class="image info">
@@ -12,6 +12,10 @@
     <div class="text">Owner Address:</div>
     <div class="text address">
       {{ this.$route.params.address ? this.$route.params.address : '-' }}
+    </div>
+    <div class="text">Token Type Id:</div>
+    <div class="text address">
+      {{ this.$route.params.tokenType ? this.$route.params.tokenType : '-' }}
     </div>
   </div>
 </template>
@@ -31,14 +35,14 @@ export default defineComponent({
      * @param {address} address The certificate's address
      * @return {string} certificate's url.
      */
-    async function getImageUrl(address) {
+    async function getImageUrl(address, tokenType) {
       const imageUrl = await fetch(
-        `https://us-central1-deguild-2021.cloudfunctions.net/app/readCertificate/${address}`,
+        `https://us-central1-deguild-2021.cloudfunctions.net/app/readCertificate/${address}/${tokenType}`,
         { mode: 'cors' },
       );
 
       const dataUrl = await imageUrl.json();
-      return dataUrl.imageUrl;
+      return dataUrl.url;
     }
 
     const state = reactive({
@@ -47,7 +51,7 @@ export default defineComponent({
     });
 
     onBeforeMount(async () => {
-      state.imageSelected = await getImageUrl(route.params.certificate);
+      state.imageSelected = await getImageUrl(route.params.certificate, route.params.tokenType);
     });
 
     return {
@@ -63,6 +67,7 @@ export default defineComponent({
   height: 7.5vw;
   position: absolute;
   background: #c4c4c4;
+  background: url('../../assets/Spinner-1s-200px.svg') no-repeat center;
 
   &.display {
     position: static;
@@ -85,10 +90,10 @@ export default defineComponent({
   &.info {
     position: absolute;
     width: 19.583vw;
-    height: 6vw;
+    height: 8.5vw;
     left: 40.208vw;
     top: 35.5vw;
-    background: rgba(196, 196, 196, 0.42);
+    background: rgba(19, 16, 16, 0.9);
   }
 }
 .text {
