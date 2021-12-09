@@ -76,8 +76,8 @@ export default defineComponent({
         ? store.state.User.certificateSelected.url
         : null)),
       loading: computed(() => store.state.User.fetching),
-      // eslint-disable-next-line max-len
-      allCerts: computed(() => (store.state.User.certificates ? store.state.User.certificates : [])),
+      allCerts: computed(() => (store.state.User.certificates
+        ? store.state.User.certificates : [])),
       pageIdx: computed(() => store.state.User.certificatePage),
       hasNext: computed(() => store.state.User.certificateToFetch),
       styles: [
@@ -150,6 +150,11 @@ export default defineComponent({
       ],
     });
 
+    /**
+     * Fetch certificates to be displayed in that page
+     *
+     * @param {int} pageIdx The page index chosen
+     */
     async function fetchAllCertificates(pageIdx) {
       const response = await fetch(
         `https://us-central1-deguild-2021.cloudfunctions.net/app/certificates/${store.state.User.user}/${pageIdx}`,

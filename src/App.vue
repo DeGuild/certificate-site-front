@@ -16,7 +16,6 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  //this is where we use the variable
   color: #ffffff;
   margin-top: 60px;
 }

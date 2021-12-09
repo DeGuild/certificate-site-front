@@ -42,7 +42,6 @@ export default defineComponent({
       );
 
       const dataUrl = await imageUrl.json();
-      // console.log(dataUrl.url);
       return dataUrl.url;
     }
 

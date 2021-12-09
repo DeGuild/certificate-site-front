@@ -30,6 +30,12 @@ export default defineComponent({
 
     const web3 = new Web3(Web3.givenProvider || 'ws://localhost:8545');
 
+    /**
+     * Returns the name of the contract
+     *
+     * @param {address} address The certificate's address
+     * @return {string} contract's name.
+     */
     async function getName(address) {
       const certificateManager = new web3.eth.Contract(abi, address);
       const caller = await certificateManager.methods.name().call();
@@ -48,7 +54,6 @@ export default defineComponent({
       );
 
       const dataUrl = await imageUrl.json();
-      // console.log(dataUrl.url);
       return dataUrl.title;
     }
     const state = reactive({
